@@ -1,0 +1,38 @@
+version: '3.4'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  app:
+    image: app
+    container_name: Discounts.Backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: src/Discounts.Backend.Api/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - dev
+    depends_on:
+      - "discounts_db"
+
+  discounts_db:
+    image: postgres:latest
+    container_name: Discounts.db
+    environment:
+      - POSTRGES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postrges_data_discounts:/var/lib/postgresql/data
+    networks:
+      - dev
+
+volumes:
+  postrges_data_discounts:
