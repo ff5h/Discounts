@@ -1,5 +1,10 @@
+using AutoMapper;
 using Discounts.Backend.Api.Configurations;
+using Discounts.Backend.Api.Mapping;
 using Discounts.Backend.Api.Middleware;
+using Discounts.Backend.Auth.Core.Implementations;
+using Discounts.Backend.Auth.Core.Interfaces;
+using Discounts.Backend.Auth.Core.Mapping;
 using Discounts.Backend.Auth.Services.Implementations;
 using Discounts.Backend.Auth.Services.Interfaces;
 using Discounts.Backend.Dal;
@@ -51,6 +56,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var jwtConfiguration = builder.Configuration.GetSection(nameof(JwtConfiguration)).Get<JwtConfiguration>();
 builder.Services.AddSingleton<IJwtConfiguration>(jwtConfiguration!);
@@ -157,6 +163,15 @@ builder.Services.AddCors(setup =>
         policy.AllowCredentials();
     });
 });
+
+builder.Services.AddSingleton(new MapperConfiguration(x =>
+{
+    x.AddProfiles(new Profile[]
+    {
+        new ContractsMapperProfile(),
+        new EntitiesMapperProfile()
+    });
+}).CreateMapper());
 
 var app = builder.Build();
 
