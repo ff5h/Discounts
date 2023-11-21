@@ -6,5 +6,6 @@ namespace Discounts.Backend.Auth.Core.Interfaces
     {
         Task<IReadOnlyCollection<CompanyDto>> GetAllCompaniesAsync();
         Task CreateCompanyAsync(CreateCompanyDto dto);
+        Task DeleteCompanyAsync(Guid companyId);
     }
 }
