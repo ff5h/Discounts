@@ -3,6 +3,7 @@ using Discounts.Backend.Auth.Core.Dtos.Company;
 using Discounts.Backend.Auth.Core.Interfaces;
 using Discounts.Backend.Dal;
 using Discounts.Backend.Dal.Entities;
+using Discounts.Backend.Dal.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Discounts.Backend.Auth.Core.Implementations
@@ -25,10 +26,21 @@ namespace Discounts.Backend.Auth.Core.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteCompanyAsync(Guid companyId)
+        {
+            var company = await _context.Companies.FirstOrDefaultAsync(x => x.Id == companyId);
+            if (company == null)
+            {
+                throw new CompanyNotFoundException(companyId);
+            }
+            _context.Remove(company);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IReadOnlyCollection<CompanyDto>> GetAllCompaniesAsync()
         {
-            var dtos = await _context.Companies.ToListAsync();
-            return _mapper.Map<IReadOnlyCollection<CompanyDto>>(dtos);
+            var companies = await _context.Companies.ToListAsync();
+            return _mapper.Map<IReadOnlyCollection<CompanyDto>>(companies);
         }
     }
 }

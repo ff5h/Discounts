@@ -33,5 +33,12 @@ namespace Discounts.Backend.Api.Controllers
             await _companyService.CreateCompanyAsync(dto);
             return StatusCode(201);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _companyService.DeleteCompanyAsync(id);
+            return StatusCode(200);
+        }
     }
 }
