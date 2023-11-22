@@ -1,6 +1,6 @@
-﻿namespace Discounts.Backend.Dal.Entities
+﻿namespace Discounts.Backend.Auth.Core.Dtos.Shop
 {
-    public class Shop
+    public class ShopDto
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
@@ -11,8 +11,7 @@
         public required string Address { get; set; }
 
         public Guid CompanyId { get; set; }
-        public required Company Company { get; set; }
 
-        public ICollection<Promotion> Promotions { get; set; } = null!;
+        public ICollection<Guid> PromotionIds { get; set; } = null!;
     }
 }
