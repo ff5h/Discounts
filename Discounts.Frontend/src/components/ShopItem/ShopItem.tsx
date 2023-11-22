@@ -71,7 +71,7 @@ export const ShopItem = (props: Props) => {
                             <Rating name="read-only" value={props.data.rating} readOnly />
                         </Box>
                     <ThemeProvider theme={theme}>
-                        <Button variant="contained" href="/shop" size="medium" sx={{bgcolor:'blue.main', width: 150, height: 30}}>
+                        <Button variant="contained" href={"/shop/" + props.data.id} size="medium" sx={{bgcolor:'blue.main', width: 150, height: 30}}>
                             Детальніше
                         </Button>
                     </ThemeProvider>

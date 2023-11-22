@@ -1,6 +1,15 @@
 import {ContainerWrapper, InfoWrapper, InsideWrapper, ShopDataWrapper} from "./ProductsComponent.styled";
 import shop from "../../images/shop.jpg"
 interface Props {
+    data: {
+        imageUrl: string,
+        name: string,
+        description: string,
+        oldPrice: number,
+        newPrice: number,
+        categoryName: string,
+        promotionId: string
+    }
 }
 
 export const ProductsComponent = (props: Props) => {
@@ -12,16 +21,17 @@ export const ProductsComponent = (props: Props) => {
                     <img src={shop} alt=""/>
                     <ShopDataWrapper>
                         <div>
-                            <h1>name</h1>
-                            <p>category</p>
+                            <h1>{props.data.name}</h1>
+                            <p>{props.data.categoryName}</p>
                         </div>
                         <div>
-                            <p>New Price: new price</p>
-                            <p>Old Price: old price</p>
+                            <p>New Price: {props.data.newPrice}</p>
+                            <p>Old Price: {props.data.oldPrice}</p>
+                            <p>Знижка: {(props.data.oldPrice - props.data.newPrice) * (props.data.oldPrice / 100)}%</p>
                         </div>
                     </ShopDataWrapper>
                     <div>
-                        <p>desc</p>
+                        <p>{props.data.description}</p>
                     </div>
                 </InfoWrapper>
             </InsideWrapper>

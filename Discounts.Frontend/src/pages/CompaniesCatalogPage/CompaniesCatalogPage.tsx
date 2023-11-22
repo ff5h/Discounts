@@ -2,10 +2,11 @@ import {CarouselWrapper, Container, FilterWrapper, SubWrapper} from "./Companies
 import CompanyItem from "../../components/CompanyItem/CompanyItem";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ShopItem from "../../components/ShopItem/ShopItem";
 import {axiosPublic} from "../../api/axios";
 import {formatTimestampToHHMM} from "../../../../Discounts.Frontend/src/utils/utils";
+import * as React from "react";
 interface Props {
 }
 
@@ -50,7 +51,7 @@ export const CompaniesCatalogPage = (props: Props) => {
     const [companyState, setCompanyState] = useState<CompanyType[]>();
 
     useEffect(() => {
-        axiosPublic.get('http://localhost:8080/api/Company').then((resp) => {
+        axiosPublic.get('http://localhost:8080/api/Company').then((resp:any) => {
             const allPersons = resp.data;
             setCompanyState(allPersons);
         });
@@ -58,24 +59,47 @@ export const CompaniesCatalogPage = (props: Props) => {
 
     const [companyId, setCompanyId] = useState<string | null>('adbfacf4-a7d9-4ea4-92ea-21de5f9f1558');
     const [shopState, setShopState] = useState<ShopType[]>();
-    console.log(shopState)
-    useEffect(() => {
-        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp) => {
-            const shopData = resp.data;
+    const [state, setState] = useState<boolean>()
 
-            const formattedShopData = shopData.map(shop => ({
+    useEffect(() => {
+        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp:any) => {
+            const shopData:ShopType[] = resp.data;
+
+            const formattedShopData = shopData.map((shop:any) => ({
                 ...shop,
                 openTime: formatTimestampToHHMM(shop.openTime),
                 closeTime: formatTimestampToHHMM(shop.closeTime),
             }));
 
             setShopState(formattedShopData);
+            uniqueCities.current = Array.from(new Set(shopData?.map(item => item.city)))
         });
-    }, [companyId])
+    }, [companyId, state])
 
     const onClickHandler = (id:string) => {
         setCompanyId(id);
     }
+
+    const [filter, setFilter] = useState('');
+    const uniqueCities = useRef<Array<string>>()
+
+    const handleChangeFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilter(event.target.value);
+        axiosPublic.get(`http://localhost:8080/api/Shop/company/${companyId}/city/${event.target.value}`).then((resp:any) => {
+            const allPersons = resp.data;
+            const formattedShopData = allPersons.map((shop:any) => ({
+                ...shop,
+                openTime: formatTimestampToHHMM(shop.openTime),
+                closeTime: formatTimestampToHHMM(shop.closeTime),
+            }));
+
+            setShopState(formattedShopData);
+            console.log(uniqueCities.current)
+        });
+    }
+
+
+
     return(
         <Container>
             <CarouselWrapper>
@@ -103,7 +127,6 @@ export const CompaniesCatalogPage = (props: Props) => {
                             return(
                                 <div key={index} onClick={() =>{
                                     onClickHandler(company.id)
-                                    console.log(company.id)
                                 }}>
                                     <CompanyItem data={company}/>
                                 </div>
@@ -113,7 +136,25 @@ export const CompaniesCatalogPage = (props: Props) => {
                 </Carousel>
             </CarouselWrapper>
             <FilterWrapper>
-
+                <label htmlFor="filter">Filter: </label>
+                <select
+                    name="filter"
+                    value={filter}
+                    onChange={handleChangeFilter}
+                >
+                    <option value="">-- Select Country --</option>
+                    {uniqueCities.current?.map((city, index) => {
+                        return(
+                            <option key={index} value={`${city}`}>{city}</option>
+                        )
+                    })}
+                </select>
+                <button onClick={() => {
+                    setState(!state)
+                    setFilter('')
+                    console.log(1)
+                }
+                }>Відмінити</button>
             </FilterWrapper>
             <SubWrapper>
                 {

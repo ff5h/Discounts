@@ -1,19 +1,29 @@
 import {Container, Wrapper} from "./DiscountsComponent.styled";
+import {formatTimestampToUkrainianDate} from "../../utils/utils";
 
-interface Props {}
+interface Props {
+    data:{
+        id: string,
+        title: string,
+        startTime: string,
+        endTime: string
+    }
+}
 
 
 
 export const DiscountComponent = (props: Props) => {
     const {} = props
 
+    const startDate = formatTimestampToUkrainianDate(props.data.startTime)
+    const endDate = formatTimestampToUkrainianDate(props.data.endTime)
+
     return(
         <Container>
             <Wrapper>
-                <p className={'discount'}>Міцні знижки (акція дійсна при наявності товару, тільки з карткою АТБ)</p>
-                <p>Почнеться через 3 дні</p>
+                <p className={'discount'}>{props.data.title}</p>
             </Wrapper>
-            <p className={'date'}>24 - 26 Листопада 2023</p>
+            <p className={'date'}>{`${startDate} - ${endDate}`}</p>
         </Container>
     );
 };

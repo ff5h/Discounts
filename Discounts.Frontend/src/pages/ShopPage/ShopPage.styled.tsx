@@ -43,6 +43,9 @@ export const InfoWrapper = styled.div`
 export const ListWrapper = styled.ul`
   margin: 0;
   padding-left: 15px;
+  li{
+    cursor: pointer;
+  }
 `;
 
 export const ProductWrapper = styled.div`
@@ -55,4 +58,12 @@ export const ProductWrapper = styled.div`
     grid-template-columns: 1fr;
   }
   gap: 0.625rem;
+`;
+
+export const FilterWrapper = styled.div`
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+  select{
+    font-size: 1rem;
+  }
 `;

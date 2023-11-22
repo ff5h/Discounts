@@ -10,6 +10,7 @@ export const CarouselWrapper = styled.div`
   height: 100px;
   z-index: 10;
   margin-bottom: 50px;
+  
   div.react-multi-carousel-list.out{
     background-color: #435585;
     transition-duration: 0.2s;
@@ -33,5 +34,9 @@ export const SubWrapper = styled.div`
 `;
 
 export const FilterWrapper = styled.div`
-  
+  margin: 0.5rem 3rem;
+  font-size: 1.25rem;
+  select{
+    font-size: 1rem;
+  }
 `;
