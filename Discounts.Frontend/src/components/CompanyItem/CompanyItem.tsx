@@ -7,15 +7,14 @@ import logo from "../../images/atb.png";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 
-interface Props {
+type Props = {
     data:{
         id: string,
         name: string,
         imageUrl: string,
         rating: number,
         shopsId: string
-    }
-}
+    }}
 
 export const CompanyItem = (props: Props) => {
     const {} = props

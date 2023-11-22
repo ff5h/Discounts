@@ -1,10 +1,11 @@
-import {CarouselWrapper, Container, SubWrapper} from "./CompaniesCatalogPage.styled";
+import {CarouselWrapper, Container, FilterWrapper, SubWrapper} from "./CompaniesCatalogPage.styled";
 import CompanyItem from "../../components/CompanyItem/CompanyItem";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import {useEffect, useState} from "react";
 import ShopItem from "../../components/ShopItem/ShopItem";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import {axiosPublic} from "../../api/axios";
+import {formatTimestampToHHMM} from "../../../../Discounts.Frontend/src/utils/utils";
 interface Props {
 }
 
@@ -14,6 +15,18 @@ type CompanyType = {
     imageUrl: string,
     rating: number,
     shopsId: string
+}
+
+type ShopType = {
+    id: string,
+    name: string,
+    rating: number,
+    openTime: string,
+    closeTime: string,
+    city: string,
+    address: string,
+    companyId: string,
+    promotionIds: []
 }
 export const CompaniesCatalogPage = (props: Props) => {
     const {} = props
@@ -34,18 +47,35 @@ export const CompaniesCatalogPage = (props: Props) => {
 
     window.addEventListener('scroll', changeHeaderShadow);
 
-    const [appState, setAppState] = useState<CompanyType[]>();
-    const axiosPrivate = useAxiosPrivate();
+    const [companyState, setCompanyState] = useState<CompanyType[]>();
 
     useEffect(() => {
-        axiosPrivate.get('http://localhost:8080/api/Company').then((resp) => {
+        axiosPublic.get('http://localhost:8080/api/Company').then((resp) => {
             const allPersons = resp.data;
-            setAppState(allPersons);
+            setCompanyState(allPersons);
         });
-    }, [setAppState]);
+    }, [setCompanyState]);
 
-    console.log(appState)
+    const [companyId, setCompanyId] = useState<string | null>('adbfacf4-a7d9-4ea4-92ea-21de5f9f1558');
+    const [shopState, setShopState] = useState<ShopType[]>();
+    console.log(shopState)
+    useEffect(() => {
+        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/${companyId}`).then((resp) => {
+            const shopData = resp.data;
 
+            const formattedShopData = shopData.map(shop => ({
+                ...shop,
+                openTime: formatTimestampToHHMM(shop.openTime),
+                closeTime: formatTimestampToHHMM(shop.closeTime),
+            }));
+
+            setShopState(formattedShopData);
+        });
+    }, [companyId])
+
+    const onClickHandler = (id:string) => {
+        setCompanyId(id);
+    }
     return(
         <Container>
             <CarouselWrapper>
@@ -67,23 +97,34 @@ export const CompaniesCatalogPage = (props: Props) => {
                     renderButtonGroupOutside={false}
                     renderDotsOutside={false}
                     responsive={responsive}>
-                        {appState ?
+                        {companyState ?
 
-                            appState?.map(company => {
+                            companyState?.map((company, index) => {
                             return(
-                                <CompanyItem data={company}/>
+                                <div key={index} onClick={() =>{
+                                    onClickHandler(company.id)
+                                    console.log(company.id)
+                                }}>
+                                    <CompanyItem data={company}/>
+                                </div>
                             )
                         })
                         : <div></div>}
                 </Carousel>
             </CarouselWrapper>
+            <FilterWrapper>
+
+            </FilterWrapper>
             <SubWrapper>
-                <ShopItem/>
-                <ShopItem/>
-                <ShopItem/>
-                <ShopItem/>
-                <ShopItem/>
-                <ShopItem/>
+                {
+                    shopState ?
+                        shopState?.map((shop, index) => {
+                            return(
+                                <ShopItem key={index} data={shop}/>
+                            )
+                        })
+                        : <div></div>
+                }
             </SubWrapper>
         </Container>
     );
