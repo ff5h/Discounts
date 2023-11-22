@@ -10,9 +10,7 @@ using Discounts.Backend.Auth.Services.Interfaces;
 using Discounts.Backend.Dal;
 using Discounts.Backend.Dal.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -58,6 +56,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
 
 var jwtConfiguration = builder.Configuration.GetSection(nameof(JwtConfiguration)).Get<JwtConfiguration>();
 builder.Services.AddSingleton<IJwtConfiguration>(jwtConfiguration!);

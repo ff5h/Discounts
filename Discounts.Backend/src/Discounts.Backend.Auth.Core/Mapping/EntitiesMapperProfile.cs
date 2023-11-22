@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Discounts.Backend.Auth.Core.Dtos.Company;
+using Discounts.Backend.Auth.Core.Dtos.Promotion;
 using Discounts.Backend.Auth.Core.Dtos.Shop;
 using Discounts.Backend.Dal.Entities;
 
@@ -11,6 +12,7 @@ namespace Discounts.Backend.Auth.Core.Mapping
         {
             CompanyMaps();
             ShopMaps();
+            PromotionMaps();
         }
 
         private void CompanyMaps()
@@ -23,7 +25,15 @@ namespace Discounts.Backend.Auth.Core.Mapping
         private void ShopMaps()
         {
             CreateMap<CreateShopDto, Shop>();
-            CreateMap<Shop, ShopDto>();
+            CreateMap<Shop, ShopDto>()
+                .ForMember(dest => dest.Promotions, opt => opt.MapFrom(src => src.Promotions));
+            
+        }
+
+        private void PromotionMaps()
+        {
+            CreateMap<Promotion, PromotionDto>();
+            CreateMap<CreatePromotionDto, Promotion>();
         }
     }
 }

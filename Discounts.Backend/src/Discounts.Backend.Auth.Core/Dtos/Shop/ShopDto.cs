@@ -1,4 +1,6 @@
-﻿namespace Discounts.Backend.Auth.Core.Dtos.Shop
+﻿using Discounts.Backend.Auth.Core.Dtos.Promotion;
+
+namespace Discounts.Backend.Auth.Core.Dtos.Shop
 {
     public class ShopDto
     {
@@ -12,6 +14,6 @@
 
         public Guid CompanyId { get; set; }
 
-        public ICollection<Guid> PromotionIds { get; set; } = null!;
+        public ICollection<PromotionDto> Promotions { get; set; } = null!;
     }
 }

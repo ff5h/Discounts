@@ -45,7 +45,7 @@ namespace Discounts.Backend.Auth.Core.Implementations
 
         public async Task<IReadOnlyCollection<ShopDto>> GetAllShopsAsync()
         {
-            var shops = await _context.Shops.ToListAsync();
+            var shops = await _context.Shops.Include(x => x.Promotions).ToListAsync();
             return _mapper.Map<IReadOnlyCollection<ShopDto>>(shops);
         }
 
@@ -56,7 +56,7 @@ namespace Discounts.Backend.Auth.Core.Implementations
             {
                 throw new CompanyNotFoundException(companyId);
             }
-            var shops = await _context.Shops.Where(x => x.CompanyId == companyId).ToListAsync();
+            var shops = await _context.Shops.Include(x => x.Promotions).Where(x => x.CompanyId == companyId).ToListAsync();
             return _mapper.Map<IReadOnlyCollection<ShopDto>>(shops);
         }
     }
