@@ -40,5 +40,13 @@ namespace Discounts.Backend.Api.Controllers
             await _productService.DeleteProductAsync(id);
             return StatusCode(200);
         }
+
+        [HttpGet]
+        [Route("promotion/{promotionId}")]
+        public async Task<IActionResult> GetsByPromotionId(Guid promotionId)
+        {
+            var products = await _productService.GetProductsByPromotionIdAsync(promotionId);
+            return Ok(products);
+        }
     }
 }

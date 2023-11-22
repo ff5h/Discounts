@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Discounts.Backend.Auth.Core.Dtos.Product;
-using Discounts.Backend.Auth.Core.Dtos.Promotion;
 using Discounts.Backend.Auth.Core.Interfaces;
 using Discounts.Backend.Dal;
 using Discounts.Backend.Dal.Entities;
@@ -27,7 +26,7 @@ namespace Discounts.Backend.Auth.Core.Implementations
             {
                 throw new PromotionNotFoundException(dto.PromotionId);
             }
-            
+
             var category = await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == dto.CategoryId);
             if (category == null)
             {
@@ -54,6 +53,17 @@ namespace Discounts.Backend.Auth.Core.Implementations
         {
             var promotions = await _context.Products.Include(x => x.Category).ToListAsync();
             return _mapper.Map<IReadOnlyCollection<ProductDto>>(promotions);
+        }
+
+        public async Task<IReadOnlyCollection<ProductDto>> GetProductsByPromotionIdAsync(Guid promotionId)
+        {
+            var promotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Id == promotionId);
+            if (promotion == null)
+            {
+                throw new PromotionNotFoundException(promotionId);
+            }
+            var shops = await _context.Products.Include(x => x.Category).Where(x => x.PromotionId == promotionId).ToListAsync();
+            return _mapper.Map<IReadOnlyCollection<ProductDto>>(shops);
         }
     }
 }
