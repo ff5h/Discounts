@@ -21,8 +21,8 @@ namespace Discounts.Backend.Auth.Core.Implementations
 
         public async Task CreateCompanyAsync(CreateCompanyDto dto)
         {
-            var entity = _mapper.Map<Company>(dto);
-            await _context.AddAsync(entity);
+            var company = _mapper.Map<Company>(dto);
+            await _context.AddAsync(company);
             await _context.SaveChangesAsync();
         }
 
@@ -39,7 +39,7 @@ namespace Discounts.Backend.Auth.Core.Implementations
 
         public async Task<IReadOnlyCollection<CompanyDto>> GetAllCompaniesAsync()
         {
-            var companies = await _context.Companies.ToListAsync();
+            var companies = await _context.Companies.Include(x => x.Shops).ToListAsync();
             var dtos = _mapper.Map<IReadOnlyCollection<CompanyDto>>(companies);
             // get rating of company logic
             foreach (var dto in dtos)

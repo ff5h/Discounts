@@ -1,4 +1,5 @@
-﻿using Discounts.Backend.Dal.Entities;
+﻿using Discounts.Backend.Dal.Configurations;
+using Discounts.Backend.Dal.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace Discounts.Backend.Dal
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new CompanyConfiguration());
         }
     }
 }

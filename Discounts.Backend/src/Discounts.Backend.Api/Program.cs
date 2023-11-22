@@ -57,6 +57,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IShopService, ShopService>();
 
 var jwtConfiguration = builder.Configuration.GetSection(nameof(JwtConfiguration)).Get<JwtConfiguration>();
 builder.Services.AddSingleton<IJwtConfiguration>(jwtConfiguration!);
@@ -140,19 +141,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var fallbackPolicy = new AuthorizationPolicyBuilder()
-    .RequireAuthenticatedUser()
-    .Build();
+builder.Services.AddAuthorization();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = fallbackPolicy;
-});
-
-builder.Services.AddControllers(config =>
-{
-    config.Filters.Add(new AuthorizeFilter(fallbackPolicy));
-});
+builder.Services.AddControllers();
 
 builder.Services.AddCors(setup =>
 {
