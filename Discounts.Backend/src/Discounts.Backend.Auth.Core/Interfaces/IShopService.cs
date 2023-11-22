@@ -6,6 +6,7 @@ namespace Discounts.Backend.Auth.Core.Interfaces
     {
         Task<IReadOnlyCollection<ShopDto>> GetAllShopsAsync();
         Task<IReadOnlyCollection<ShopDto>> GetShopsByCompanyIdAsync(Guid companyId);
+        Task<ShopDto> GetShopByIdAsync(Guid shopId);
         Task CreateShopAsync(CreateShopDto dto);
         Task DeleteShopAsync(Guid shopId);
     }
