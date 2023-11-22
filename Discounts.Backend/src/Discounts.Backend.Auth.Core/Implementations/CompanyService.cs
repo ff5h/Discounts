@@ -40,7 +40,13 @@ namespace Discounts.Backend.Auth.Core.Implementations
         public async Task<IReadOnlyCollection<CompanyDto>> GetAllCompaniesAsync()
         {
             var companies = await _context.Companies.ToListAsync();
-            return _mapper.Map<IReadOnlyCollection<CompanyDto>>(companies);
+            var dtos = _mapper.Map<IReadOnlyCollection<CompanyDto>>(companies);
+            // get rating of company logic
+            foreach (var dto in dtos)
+            {
+                dto.Rating = 5; //stub
+            }
+            return dtos;
         }
     }
 }
