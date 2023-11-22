@@ -185,7 +185,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder => builder.AllowAnyOrigin());
+app.UseCors(builder => builder.WithOrigins("http://localhost:5173"));
 
 
 app.UseAuthentication();
