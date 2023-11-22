@@ -1,10 +1,11 @@
-import {Container, InfoWrapper, ListWrapper, ShopRatingWrapper, Wrapper} from "./ShopPage.styled";
+import {Container, InfoWrapper, ListWrapper, ShopRatingWrapper, Wrapper, ProductWrapper} from "./ShopPage.styled";
 import shop from '../../images/shop.jpg'
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import * as React from "react";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import DiscountComponent from "../../components/DiscountsComponent/DiscountsComponent";
+import ProductsComponent from "../../components/ProductsComponent/ProductsComponent";
 
 interface Props {}
 
@@ -71,6 +72,15 @@ export const ShopPage = (props: Props) => {
                     </div>
                 </InfoWrapper>
             </Container>
+            <ProductWrapper>
+                <ProductsComponent/>
+                <ProductsComponent/>
+                <ProductsComponent/>
+                <ProductsComponent/>
+                <ProductsComponent/>
+                <ProductsComponent/>
+                <ProductsComponent/>
+            </ProductWrapper>
         </Wrapper>
     );
 };
