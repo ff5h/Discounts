@@ -156,7 +156,7 @@ builder.Services.AddControllers(config =>
 
 builder.Services.AddCors(setup =>
 {
-    setup.AddDefaultPolicy(policy =>
+    setup.AddPolicy("devCorsPolicy", policy =>
     {
         policy.WithOrigins("http://localhost:5173")
             .AllowCredentials()
@@ -186,7 +186,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("devCorsPolicy");
 
 
 app.UseAuthentication();
