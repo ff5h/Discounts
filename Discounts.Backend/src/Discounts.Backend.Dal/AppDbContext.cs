@@ -20,6 +20,8 @@ namespace Discounts.Backend.Dal
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new CompanyConfiguration());
             builder.ApplyConfiguration(new ShopConfiguration());
+            builder.ApplyConfiguration(new PromotionConfiguration());
+            builder.ApplyConfiguration(new ProductConfiguration());
         }
     }
 }
