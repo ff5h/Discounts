@@ -4,6 +4,8 @@ import Layout from './components/Layout.js'
 import RegistrationPage from './pages/RegistrationPage.js'
 import LoginPage from './pages/LoginPage.js'
 import NotFoundPage from './pages/NotFoundPage.js'
+import CompaniesCatalogPage from "./pages/CompaniesCatalogPage/CompaniesCatalogPage";
+import ShopPage from "./pages/ShopPage/ShopPage";
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
           element={<RequireAuth allowedRoles={['customer', 'director']} />}
         >
           <Route path='/test' element={<div>test</div>} />
+          <Route path='/companies' element={<CompaniesCatalogPage/>}/>
+          <Route path='/shop' element={<ShopPage/>}/>
         </Route>
       </Route>
     </Routes>
