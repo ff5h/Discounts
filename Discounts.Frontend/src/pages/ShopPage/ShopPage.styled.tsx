@@ -2,17 +2,19 @@ import {styled} from "styled-components";
 
 export const Wrapper = styled.div`
   margin: 0 3.125rem;
+  position: relative;
+
 `;
 
 export const Container = styled.div`
   padding: 1rem 1rem;
   margin: 0.625rem 0;
   box-sizing: border-box;
-  width: 100%;
 
   border: 0.15rem solid black;
   border-radius: 0.3rem;
   background-color: white;
+  
   
   display: flex;
   
@@ -35,6 +37,7 @@ export const ShopRatingWrapper = styled.div`
 
 export const InfoWrapper = styled.div`
   margin: 0 3.125rem;
+  width: 100%;
 `;
 
 export const ListWrapper = styled.ul`

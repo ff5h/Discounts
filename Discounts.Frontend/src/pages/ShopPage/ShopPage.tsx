@@ -42,7 +42,7 @@ export const ShopPage = (props: Props) => {
                     <div>
                         <p>Поточні та майбутні акції:</p>
                         <div>
-                            <Scrollbars style={{ width: 500, height: 100 }}>
+                            <Scrollbars style={{ width: "100%", height: 100 }}>
                                 <ListWrapper>
                                     <li>
                                         <DiscountComponent/>
