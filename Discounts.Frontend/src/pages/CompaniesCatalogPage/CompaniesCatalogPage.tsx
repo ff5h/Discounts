@@ -60,7 +60,7 @@ export const CompaniesCatalogPage = (props: Props) => {
     const [shopState, setShopState] = useState<ShopType[]>();
     console.log(shopState)
     useEffect(() => {
-        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/${companyId}`).then((resp) => {
+        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp) => {
             const shopData = resp.data;
 
             const formattedShopData = shopData.map(shop => ({
