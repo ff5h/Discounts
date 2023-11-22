@@ -32,3 +32,6 @@ export const SubWrapper = styled.div`
     gap: 0.625rem;
 `;
 
+export const FilterWrapper = styled.div`
+  
+`;

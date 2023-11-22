@@ -4,7 +4,19 @@ import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import {createTheme, ThemeProvider} from "@mui/material";
-interface Props {}
+interface Props {
+    data:{
+        id: string,
+        name: string,
+        rating: number,
+        openTime: string,
+        closeTime: string,
+        city: string,
+        address: string,
+        companyId: string,
+        promotionIds: []
+    }
+}
 
 declare module '@mui/material/styles' {
     interface Palette {
@@ -45,9 +57,9 @@ export const ShopItem = (props: Props) => {
                         <img src={shop} alt=""/>
                     </div>
                     <ShopDataWrapper>
-                        <h1>ATB</h1>
-                        <p>7:00-20:00</p>
-                        <p>вул.Гагаріна 7/2</p>
+                        <h1>{props.data.name}</h1>
+                        <p>{`${props.data.openTime} - ${props.data.closeTime}`}</p>
+                        <p>{props.data.address}</p>
                     </ShopDataWrapper>
                 </InfoWrapper>
                 <RatingWrapper>
@@ -56,7 +68,7 @@ export const ShopItem = (props: Props) => {
                                 '& > legend': { mt: 2 },
                             }}
                         >
-                            <Rating name="read-only" value={2} readOnly />
+                            <Rating name="read-only" value={props.data.rating} readOnly />
                         </Box>
                     <ThemeProvider theme={theme}>
                         <Button variant="contained" href="/shop" size="medium" sx={{bgcolor:'blue.main', width: 150, height: 30}}>
