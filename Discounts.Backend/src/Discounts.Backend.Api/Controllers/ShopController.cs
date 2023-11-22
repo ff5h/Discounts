@@ -35,6 +35,14 @@ namespace Discounts.Backend.Api.Controllers
         }
 
         [HttpGet]
+        [Route("company/{companyId}/city/{city}")]
+        public async Task<IActionResult> GetsByCompanyIdAndCity(Guid companyId, string city)
+        {
+            var companies = await _shopService.GetShopsByCompanyIdAndCityAsync(companyId, city);
+            return Ok(companies);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {

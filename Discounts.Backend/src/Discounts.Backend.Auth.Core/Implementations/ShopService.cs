@@ -5,7 +5,6 @@ using Discounts.Backend.Dal;
 using Discounts.Backend.Dal.Entities;
 using Discounts.Backend.Dal.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace Discounts.Backend.Auth.Core.Implementations
 {
@@ -58,6 +57,21 @@ namespace Discounts.Backend.Auth.Core.Implementations
                 throw new ShopNotFoundException(shopId);
             }
             return _mapper.Map<ShopDto>(shop);
+        }
+
+        public async Task<IReadOnlyCollection<ShopDto>> GetShopsByCompanyIdAndCityAsync(Guid companyId, string city)
+        {
+            var company = await _context.Companies.FirstOrDefaultAsync(x => x.Id == companyId);
+            if (company == null)
+            {
+                throw new CompanyNotFoundException(companyId);
+            }
+            var shops = await _context.Shops
+                .Include(x => x.Promotions)
+                .Where(x => x.CompanyId == companyId && x.City == city)
+                .ToListAsync();
+
+            return _mapper.Map<IReadOnlyCollection<ShopDto>>(shops);
         }
 
         public async Task<IReadOnlyCollection<ShopDto>> GetShopsByCompanyIdAsync(Guid companyId)
