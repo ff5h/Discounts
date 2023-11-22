@@ -50,7 +50,8 @@ namespace Discounts.Backend.Auth.Core.Mapping
         {
             CreateMap<CreateProductDto, Product>();
             CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id));
         }
     }
 }

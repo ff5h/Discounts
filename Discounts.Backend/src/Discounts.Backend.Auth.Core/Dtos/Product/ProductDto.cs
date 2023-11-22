@@ -8,6 +8,7 @@
         public required string Description { get; set; }
         public double OldPrice { get; set; }
         public double NewPrice { get; set; }
+        public int CategoryId { get; set; }
         public required string CategoryName { get; set; }
     }
 }
