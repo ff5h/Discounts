@@ -48,5 +48,13 @@ namespace Discounts.Backend.Api.Controllers
             var products = await _productService.GetProductsByPromotionIdAsync(promotionId);
             return Ok(products);
         }
+
+        [HttpGet]
+        [Route("promotion/{promotionId}/category/{categoryId}")]
+        public async Task<IActionResult> GetProductsByPromotionIdAndCategoryId(Guid promotionId, int categoryId)
+        {
+            var products = await _productService.GetProductsByPromotionIdAndCategoryIdAsync(promotionId, categoryId);
+            return Ok(products);
+        }
     }
 }

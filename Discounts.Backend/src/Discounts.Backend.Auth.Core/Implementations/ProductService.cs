@@ -55,6 +55,28 @@ namespace Discounts.Backend.Auth.Core.Implementations
             return _mapper.Map<IReadOnlyCollection<ProductDto>>(promotions);
         }
 
+        public async Task<IReadOnlyCollection<ProductDto>> GetProductsByPromotionIdAndCategoryIdAsync(Guid promotionId, int categoryId)
+        {
+            var promotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Id == promotionId);
+            if (promotion == null)
+            {
+                throw new PromotionNotFoundException(promotionId);
+            }
+
+            var category = await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == categoryId);
+            if (category == null)
+            {
+                throw new ProductCategoryNotFoundException(categoryId);
+            }
+
+            var shops = await _context.Products
+                .Include(x => x.Category)
+                .Where(x => x.PromotionId == promotionId && x.CategoryId == categoryId)
+                .ToListAsync();
+
+            return _mapper.Map<IReadOnlyCollection<ProductDto>>(shops);
+        }
+
         public async Task<IReadOnlyCollection<ProductDto>> GetProductsByPromotionIdAsync(Guid promotionId)
         {
             var promotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Id == promotionId);

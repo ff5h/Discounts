@@ -9,5 +9,6 @@ namespace Discounts.Backend.Auth.Core.Interfaces
         Task CreateProductAsync(CreateProductDto dto);
         Task DeleteProductAsync(Guid productId);
         Task<IReadOnlyCollection<ProductDto>> GetProductsByPromotionIdAsync(Guid promotionId);
+        Task<IReadOnlyCollection<ProductDto>> GetProductsByPromotionIdAndCategoryIdAsync(Guid promotionId, int categoryId);
     }
 }
