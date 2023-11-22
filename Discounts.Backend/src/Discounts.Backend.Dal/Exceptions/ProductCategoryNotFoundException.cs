@@ -3,6 +3,6 @@
     public class ProductCategoryNotFoundException : NotFoundException
     {
         public ProductCategoryNotFoundException(int categoryId)
-        : base($"Category with id {categoryId} not found") { }
+            : base($"Category with id {categoryId} not found") { }
     }
 }
