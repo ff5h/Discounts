@@ -154,7 +154,16 @@ builder.Services.AddControllers(config =>
     config.Filters.Add(new AuthorizeFilter(fallbackPolicy));
 });
 
-builder.Services.AddCors();
+builder.Services.AddCors(setup =>
+{
+    setup.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddSingleton(new MapperConfiguration(x =>
 {
@@ -177,7 +186,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder => builder.WithOrigins("http://localhost:5173").AllowCredentials().AllowAnyHeader().AllowAnyMethod());
+app.UseCors();
 
 
 app.UseAuthentication();
