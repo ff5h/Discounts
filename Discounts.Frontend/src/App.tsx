@@ -6,12 +6,14 @@ import LoginPage from './pages/LoginPage.js'
 import NotFoundPage from './pages/NotFoundPage.js'
 import CompaniesCatalogPage from "./pages/CompaniesCatalogPage/CompaniesCatalogPage";
 import ShopPage from "./pages/ShopPage/ShopPage";
+import AdminPage from "./pages/AdminPage/AdminPage";
 
 const App = () => {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
         <Route path='/register' element={<RegistrationPage />} />
+        <Route path='/admin' element={<AdminPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='*' element={<NotFoundPage />} />
 

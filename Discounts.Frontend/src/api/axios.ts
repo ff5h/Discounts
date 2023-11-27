@@ -9,6 +9,14 @@ export const axiosPublic = axios.create({
     },
 });
 
+export const axiosImage = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+        "Content-Type": "multipart/form-data",
+        'accept': '*/*'
+    },
+});
+
 export const axiosPrivate = axios.create({
     baseURL: BASE_URL,
     headers: {

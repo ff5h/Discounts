@@ -15,7 +15,7 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import DiscountComponent from "../../components/DiscountsComponent/DiscountsComponent";
 import ProductsComponent from "../../components/ProductsComponent/ProductsComponent";
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {axiosPublic} from "../../api/axios";
 import {formatTimestampToHHMM} from "../../utils/utils";
 
@@ -48,7 +48,13 @@ type ProductType = {
     oldPrice: number,
     newPrice: number,
     categoryName: string,
+    categoryId: number,
     promotionId: string
+}
+
+type CategoryType = {
+    id: number,
+    name: string
 }
 
 
@@ -83,10 +89,25 @@ export const ShopPage = (props: Props) => {
     }
 
     const [filter, setFilter] = useState('');
+    const uniqueCategory = useRef<Array<string>>()
 
     const handleChangeFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
+        // axiosPublic.get(`http://localhost:8080/api/Product/promotion/${shopData?.promotions}/category/${productData?.categoryId}`).then((resp:any) => {
+        //     const allPersons = resp.data;
+        //
+        //     setProductData(allPersons);
+        //     console.log(uniqueCategory.current)
+        // });
     }
+
+    useEffect(() => {
+        axiosPublic.get<CategoryType[]>(`http://localhost:8080/api/ProductCategory`).then((resp:any) => {
+            const allPersons:CategoryType[] = resp.data;
+            uniqueCategory.current = Array.from(new Set(allPersons?.map(item => item.name)))
+            console.log(uniqueCategory.current)
+        });
+    })
 
     return(
         <Wrapper>
@@ -142,9 +163,13 @@ export const ShopPage = (props: Props) => {
                     onChange={handleChangeFilter}
                 >
                     <option value="">-- Please Select --</option>
-                    <option value="name">Name</option>
-                    <option value="date">Date</option>
-                    <option value="category">Category</option>
+                    {
+                        uniqueCategory.current?.map((category, index) => {
+                            return(
+                                <option key={index} value={`${category}`}>{category}</option>
+                            )
+                        })
+                    }
                 </select>
             </FilterWrapper>
             <ProductWrapper>
