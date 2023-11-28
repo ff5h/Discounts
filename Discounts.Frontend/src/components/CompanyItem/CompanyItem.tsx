@@ -3,9 +3,10 @@ import {
     PhotoWrapper,
     Wrapper
 } from "./CompanyItem.styled";
-import logo from "../../images/atb.png";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
+import {useEffect, useState} from "react";
+import {axiosPublic} from "../../api/axios";
 
 type Props = {
     data:{
@@ -19,10 +20,21 @@ type Props = {
 export const CompanyItem = (props: Props) => {
     const {} = props
 
+    const [image, setImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        console.log(props.data.imageUrl)
+        axiosPublic.get(`/api/File/${props.data.imageUrl}`).then((resp:any) => {
+            const data = resp.arrayBuffer();
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(data)));
+            setImage('data:image/jpeg;base64,' + base64)
+        })
+    },[])
+
     return(
         <Wrapper>
             <PhotoWrapper>
-                <img src={logo} alt=""/>
+                {image ? <img src={image} alt=""/> : <p>loading</p>}
             </PhotoWrapper>
             <InfoWrapper>
                 <h1>{props.data.name}</h1>

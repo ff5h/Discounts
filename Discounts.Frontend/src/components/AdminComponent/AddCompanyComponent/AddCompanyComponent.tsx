@@ -23,8 +23,7 @@ export const AddCompanyComponent = (props: Props) => {
         imageUrl: ''
     });
 
-    const [image, setImage] = useState<ImageType>()
-
+    const [file, setFile] = useState<File | null>(null);
     const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setData({
@@ -33,33 +32,30 @@ export const AddCompanyComponent = (props: Props) => {
         });
     };
     const handleChangeFile = (e:ChangeEvent<HTMLInputElement>) => {
-        if (e.target && e.target.files && e.target.files.length > 0) {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
             const values = e.target.value;
-            const value = e.target.files?.[0];
-            const formData = new FormData();
-            formData.append("file", value);
-            console.log(formData)
-            setImage({image: formData || null})
-            console.log(image)
             setData({
                 ...data,
                 [e.target.name]: values
             });
-        }
-
     };
 
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(image)
-        axiosImage.post<ImageType>("http://localhost:8080/api/File", image).then((resp:any) => {
-            const companyData = {
-                name: data.name,
-                imageUrl: resp.data
-            }
-            console.log(resp.data)
-            axiosPublic.post<InputType>("http://localhost:8080/api/Company", companyData).then((resp:any) => console.log(resp));
-        })
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            axiosImage.post<ImageType>("http://localhost:8080/api/File", formData).then((resp:any) => {
+                const companyData = {
+                    name: data.name,
+                    imageUrl: resp.data
+                }
+                console.log(resp.data)
+                axiosPublic.post<InputType>("http://localhost:8080/api/Company", companyData).then((resp:any) => console.log(resp));
+            })
+        }
     };
 
     return(

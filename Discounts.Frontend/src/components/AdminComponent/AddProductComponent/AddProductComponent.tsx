@@ -1,5 +1,5 @@
 import {ChangeEvent, FormEvent, useState} from "react";
-import {axiosPublic} from "../../../api/axios";
+import {axiosImage, axiosPublic} from "../../../api/axios";
 import {FormWrapper} from "./AddProductComponent.styled";
 
 interface Props {
@@ -14,6 +14,10 @@ type InputType = {
     newPrice: number,
     categoryId: number,
     promotionId: string
+}
+
+interface ImageType {
+    image: FormData | null;
 }
 
 export const AddProductComponent = (props: Props) => {
@@ -38,19 +42,37 @@ export const AddProductComponent = (props: Props) => {
         });
     };
 
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleChangeFile = (e:ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+        const values = e.target.value;
+        setData({
+            ...data,
+            [e.target.name]: values
+        });
+    };
+
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const productData = {
-            name: data.name,
-            imageUrl: data.imageUrl,
-            description: data.description,
-            oldPrice: data.oldPrice,
-            newPrice: data.newPrice,
-            categoryId: data.categoryId,
-            promotionId: data.promotionId
-        };
-        axiosPublic.post<InputType>("http://localhost:8080/api/Product", productData).then((resp:any) => console.log(resp));
-        console.log(productData)
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            axiosImage.post<ImageType>("http://localhost:8080/api/File", formData).then((resp:any) => {
+                const productData = {
+                    name: data.name,
+                    imageUrl: resp.data,
+                    description: data.description,
+                    oldPrice: data.oldPrice,
+                    newPrice: data.newPrice,
+                    categoryId: data.categoryId,
+                    promotionId: data.promotionId
+                };
+                axiosPublic.post<InputType>("http://localhost:8080/api/Product", productData).then((resp:any) => console.log(resp));
+            })
+        }
         setData(
             {
                 imageUrl: '',
@@ -127,7 +149,7 @@ export const AddProductComponent = (props: Props) => {
                         type="file"
                         name="imageUrl"
                         value={data.imageUrl}
-                        onChange={handleChange}
+                        onChange={handleChangeFile}
                     />
                 </label>
                 <button type="submit">Add</button>
