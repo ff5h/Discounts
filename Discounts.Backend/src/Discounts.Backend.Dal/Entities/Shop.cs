@@ -4,7 +4,9 @@
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
-        public double Rating { get; set; }
+
+        public ICollection<Vote> Votes { get; set; } = null!;
+
         public DateTime OpenTime { get; set; }
         public DateTime CloseTime { get; set; }
         public required string City { get; set; }

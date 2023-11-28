@@ -7,6 +7,7 @@ namespace Discounts.Backend.Auth.Core.Dtos.Shop
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public double Rating { get; set; }
+        public int AmountOfVote { get; set; }
         public DateTime OpenTime { get; set; }
         public DateTime CloseTime { get; set; }
         public required string City { get; set; }

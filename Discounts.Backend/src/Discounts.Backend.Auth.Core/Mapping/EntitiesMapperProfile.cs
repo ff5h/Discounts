@@ -29,6 +29,7 @@ namespace Discounts.Backend.Auth.Core.Mapping
         private void ShopMaps()
         {
             CreateMap<CreateShopDto, Shop>();
+            CreateMap<VoteShopDto, Vote>();
             CreateMap<Shop, ShopDto>()
                 .ForMember(dest => dest.Promotions, opt => opt.MapFrom(src => src.Promotions));
             

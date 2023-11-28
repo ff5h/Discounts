@@ -31,6 +31,7 @@ namespace Discounts.Backend.Api.Mapping
         private void ShopMaps()
         {
             CreateMap<CreateShopRequest, CreateShopDto>();
+            CreateMap<VoteShopRequest, VoteShopDto>();
         }
 
         private void PromotionMaps()

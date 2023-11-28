@@ -3,7 +3,6 @@
     public class CreateShopDto
     {
         public required string Name { get; set; }
-        public double Rating { get; set; }
         public DateTime OpenTime { get; set; }
         public DateTime CloseTime { get; set; }
         public required string City { get; set; }

@@ -22,6 +22,7 @@ namespace Discounts.Backend.Dal
             builder.ApplyConfiguration(new ShopConfiguration());
             builder.ApplyConfiguration(new PromotionConfiguration());
             builder.ApplyConfiguration(new ProductConfiguration());
+            builder.ApplyConfiguration(new VoteConfiguration());
         }
     }
 }

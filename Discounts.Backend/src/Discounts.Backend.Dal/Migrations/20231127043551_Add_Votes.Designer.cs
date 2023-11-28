@@ -3,6 +3,7 @@ using System;
 using Discounts.Backend.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Discounts.Backend.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127043551_Add_Votes")]
+    partial class Add_Votes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,8 +247,7 @@ namespace Discounts.Backend.Dal.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.HasIndex("UserId", "ShopId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Vote");
                 });

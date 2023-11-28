@@ -58,6 +58,15 @@ namespace Discounts.Backend.Api.Controllers
             return StatusCode(201);
         }
 
+        [HttpPost]
+        [Route("vote")]
+        public async Task<IActionResult> Vote(VoteShopRequest request)
+        {
+            var dto = _mapper.Map<VoteShopDto>(request);
+            await _shopService.VoteShopAsync(dto);
+            return StatusCode(201);
+        }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
