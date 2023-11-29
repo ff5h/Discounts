@@ -194,6 +194,7 @@ namespace Discounts.Backend.Dal.Migrations
                     CloseTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     City = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>

@@ -14,6 +14,7 @@ namespace Discounts.Backend.Dal
         public DbSet<Promotion> Promotions { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
+        public DbSet<Vote> Votes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

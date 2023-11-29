@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Discounts.Backend.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231128065254_Initial")]
-    partial class Initial
+    [Migration("20231129230433_Add_Votes")]
+    partial class Add_Votes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,6 +146,10 @@ namespace Discounts.Backend.Dal.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -250,7 +254,7 @@ namespace Discounts.Backend.Dal.Migrations
                     b.HasIndex("UserId", "ShopId")
                         .IsUnique();
 
-                    b.ToTable("Vote");
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
