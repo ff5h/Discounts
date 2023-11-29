@@ -8,6 +8,8 @@ import AddProductCategoryComponent
     from "../../components/AdminComponent/AddProductCategoryComponent/AddProductCategoryComponent";
 import AddPromotionComponent from "../../components/AdminComponent/AddPromotionComponent/AddPromotionComponent";
 import AddShopComponent from "../../components/AdminComponent/AddShopComponent/AddShopComponent";
+import LoginForm from "../../components/AuthComponent/LoginForm/LoginForm";
+// import RegistrationForm from "../../components/AuthComponent/RegistrationForm/RegistrationForm";
 
 
 interface Props {
@@ -22,6 +24,7 @@ export const AdminPage = (props: Props) => {
     const [addProductCategoryModal, setAddProductCategoryModal] = useState(false);
     const [addPromotionModal, setAddPromotionModal] = useState(false);
     const [addShopModal, setAddShopModal] = useState(false);
+    const [isLoginActive, setLoginActive] = useState(false);
 
     return(
         <Container>
@@ -31,6 +34,7 @@ export const AdminPage = (props: Props) => {
                 <Button onClick={() => setAddProductCategoryModal(true)} variant="contained">Add ProductCategory</Button>
                 <Button onClick={() => setAddPromotionModal(true)} variant="contained">Add Promotion</Button>
                 <Button onClick={() => setAddShopModal(true)} variant="contained">Add Shop</Button>
+                <Button onClick={() => setLoginActive(true)} variant="contained">login</Button>
             </ButtonWrapper>
             <ModalComponent active={addCompanyModal} setActive={setAddCompanyModal}>
                 <AddCompanyComponent/>
@@ -47,7 +51,9 @@ export const AdminPage = (props: Props) => {
             <ModalComponent active={addShopModal} setActive={setAddShopModal}>
                 <AddShopComponent/>
             </ModalComponent>
-
+            <ModalComponent active={isLoginActive} setActive={setLoginActive}>
+                <LoginForm/>
+            </ModalComponent>
         </Container>
     );
 }

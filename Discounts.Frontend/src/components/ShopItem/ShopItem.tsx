@@ -49,6 +49,7 @@ const theme = createTheme({
 
 export const ShopItem = (props: Props) => {
     const {} = props
+
     return(
         <ContainerWrapper>
             <InsideWrapper>
@@ -68,7 +69,7 @@ export const ShopItem = (props: Props) => {
                                 '& > legend': { mt: 2 },
                             }}
                         >
-                            <Rating name="read-only" value={props.data.rating} readOnly />
+                            <Rating name="read-only" precision={0.1} value={props.data.rating} readOnly />
                         </Box>
                     <ThemeProvider theme={theme}>
                         <Button variant="contained" href={"/shop/" + props.data.id} size="medium" sx={{bgcolor:'blue.main', width: 150, height: 30}}>

@@ -5,7 +5,7 @@ import 'react-multi-carousel/lib/styles.css';
 import {useEffect, useRef, useState} from "react";
 import ShopItem from "../../components/ShopItem/ShopItem";
 import {axiosPublic} from "../../api/axios";
-import {formatTimestampToHHMM} from "../../../../Discounts.Frontend/src/utils/utils";
+import {formatTimestampToHHMM} from "../../../src/utils/utils";
 import * as React from "react";
 interface Props {
 }
@@ -57,7 +57,7 @@ export const CompaniesCatalogPage = (props: Props) => {
         });
     }, [setCompanyState]);
 
-    const [companyId, setCompanyId] = useState<string | null>('adbfacf4-a7d9-4ea4-92ea-21de5f9f1558');
+    const [companyId, setCompanyId] = useState<string | null>('');
     const [shopState, setShopState] = useState<ShopType[]>();
     const [state, setState] = useState<boolean>()
 

@@ -38,7 +38,8 @@ type ShopType = {
     city: string,
     address: string,
     companyId: string,
-    promotions: PromotionType[]
+    promotions: PromotionType[],
+    amountOfVote:number
 }
 
 type ProductType = {
@@ -57,14 +58,19 @@ type CategoryType = {
     name: string
 }
 
+type VoteType = {
+    shopId: string | undefined,
+    userId: string | null,
+    value: number | null | undefined
+}
+
 
 export const ShopPage = (props: Props) => {
     const {} = props
     const {id} = useParams();
     const [shopData, setShopData] = useState<ShopType>()
-    const [value, setValue] = React.useState<number | null>();
+    const [value, setValue] = React.useState<number | null | undefined>(shopData?.rating);
     const [productData, setProductData] = useState<ProductType[]>()
-
 
     useEffect(() => {
         axiosPublic.get<ShopType>(`http://localhost:8080/api/Shop/${id}`).then((resp:any) => {
@@ -109,6 +115,20 @@ export const ShopPage = (props: Props) => {
         });
     })
 
+
+    const onChangeHandler = (value:number | null) => {
+        setValue(value)
+        const data:VoteType = {
+            shopId: shopData?.id,
+            userId: localStorage.getItem('userId'),
+            value: value
+        }
+        console.log(data.userId)
+        axiosPublic.post<VoteType>(`http://localhost:8080/api/Shop/vote`, data).then((resp:any) => {
+            console.log(resp)
+        });
+    }
+
     return(
         <Wrapper>
             <Container>
@@ -116,6 +136,7 @@ export const ShopPage = (props: Props) => {
                 <InfoWrapper>
                     <ShopRatingWrapper>
                         <p>{shopData?.name}</p>
+                        <h5>{`Кількість голосів: ${shopData?.amountOfVote}`}</h5>
                         <Box
                             sx={{
                                 '& > legend': { mt: 2 },
@@ -125,9 +146,9 @@ export const ShopPage = (props: Props) => {
                                 name="simple-controlled"
                                 value={value}
                                 size="medium"
-                                precision={0.5}
-                                onChange={(_event, newValue) => {
-                                    setValue(newValue);
+                                precision={0.1}
+                                onChange={(_event, value) => {
+                                    onChangeHandler(value);
                                 }}
                             />
                             </Box>

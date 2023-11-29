@@ -26,7 +26,7 @@ export const ModalContent = styled.div`
   background-color: white;
   transform: scale(0.5);
   transition: 0.4s all;
-  width: 70vw;
+  width: fit-content;
   
   &.active{
     transform: scale(1);

@@ -23,12 +23,11 @@ export const CompanyItem = (props: Props) => {
     const [image, setImage] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log(props.data.imageUrl)
-        axiosPublic.get(`/api/File/${props.data.imageUrl}`).then((resp:any) => {
-            const data = resp.arrayBuffer();
-            const base64 = btoa(String.fromCharCode(...new Uint8Array(data)));
-            setImage('data:image/jpeg;base64,' + base64)
+        const path = props.data.imageUrl.replace(/\//g, "%2F")
+        axiosPublic.get(`/api/File/${path}`).then((resp:any) => {
+            setImage(resp.request.responseURL)
         })
+
     },[])
 
     return(

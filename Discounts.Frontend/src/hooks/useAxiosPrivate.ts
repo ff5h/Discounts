@@ -1,5 +1,24 @@
-import { axiosPrivate } from "../api/axios";
+import {axiosPrivate, axiosPublic} from "../api/axios";
 import { useEffect } from "react";
+import {jwtDecode} from "jwt-decode";
+
+
+interface Token {
+    nameid: string
+}
+
+const refreshRequest = () => {
+    useEffect(() => {
+        const refresh = localStorage.getItem('refreshToken');
+        axiosPublic.post("http://localhost:8080/api/Account/refresh-token", refresh).then((resp: any) => {
+            const {accessToken, refreshToken} = resp.data;
+            const token:Token = jwtDecode(accessToken);
+            localStorage.setItem('userId', JSON.stringify(token.nameid))
+            localStorage.setItem('accessToken', JSON.stringify(accessToken))
+            localStorage.setItem('refreshToken', JSON.stringify(refreshToken))
+        })
+    })
+}
 
 const useAxiosPrivate = () => {
     // const accessToken = localStorage.getItem("access");
@@ -21,6 +40,7 @@ const useAxiosPrivate = () => {
                 const prevRequest = error?.config;
                 if (error?.response?.status === 403 && !prevRequest?.sent) {
                     prevRequest.sent = true;
+                    refreshRequest();
                     return axiosPrivate(prevRequest);
                 }
                 return Promise.reject(error);
