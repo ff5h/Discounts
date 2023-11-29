@@ -10,7 +10,9 @@ using Discounts.Backend.Auth.Services.Interfaces;
 using Discounts.Backend.Dal;
 using Discounts.Backend.Dal.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -143,9 +145,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAuthorization();
+var fallbackPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
 
-builder.Services.AddControllers();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = fallbackPolicy;
+});
+
+builder.Services.AddControllers(config =>
+{
+    config.Filters.Add(new AuthorizeFilter(fallbackPolicy));
+});
 
 builder.Services.AddCors(setup =>
 {

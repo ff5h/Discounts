@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Discounts.Backend.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231121165947_Add_Business_Entities")]
-    partial class Add_Business_Entities
+    [Migration("20231128065254_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,10 @@ namespace Discounts.Backend.Dal.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -105,7 +109,7 @@ namespace Discounts.Backend.Dal.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("ShopId")
+                    b.Property<Guid>("ShopId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("StartTime")
@@ -148,9 +152,6 @@ namespace Discounts.Backend.Dal.Migrations
 
                     b.Property<DateTime>("OpenTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
@@ -224,6 +225,32 @@ namespace Discounts.Backend.Dal.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Discounts.Backend.Dal.Entities.Vote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ShopId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShopId");
+
+                    b.HasIndex("UserId", "ShopId")
+                        .IsUnique();
+
+                    b.ToTable("Vote");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -361,7 +388,7 @@ namespace Discounts.Backend.Dal.Migrations
             modelBuilder.Entity("Discounts.Backend.Dal.Entities.Product", b =>
                 {
                     b.HasOne("Discounts.Backend.Dal.Entities.ProductCategory", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -379,9 +406,13 @@ namespace Discounts.Backend.Dal.Migrations
 
             modelBuilder.Entity("Discounts.Backend.Dal.Entities.Promotion", b =>
                 {
-                    b.HasOne("Discounts.Backend.Dal.Entities.Shop", null)
+                    b.HasOne("Discounts.Backend.Dal.Entities.Shop", "Shop")
                         .WithMany("Promotions")
-                        .HasForeignKey("ShopId");
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("Discounts.Backend.Dal.Entities.Shop", b =>
@@ -393,6 +424,25 @@ namespace Discounts.Backend.Dal.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Discounts.Backend.Dal.Entities.Vote", b =>
+                {
+                    b.HasOne("Discounts.Backend.Dal.Entities.Shop", "Shop")
+                        .WithMany("Votes")
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Discounts.Backend.Dal.Entities.User", "User")
+                        .WithMany("Votes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -451,6 +501,11 @@ namespace Discounts.Backend.Dal.Migrations
                     b.Navigation("Shops");
                 });
 
+            modelBuilder.Entity("Discounts.Backend.Dal.Entities.ProductCategory", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("Discounts.Backend.Dal.Entities.Promotion", b =>
                 {
                     b.Navigation("Products");
@@ -459,6 +514,13 @@ namespace Discounts.Backend.Dal.Migrations
             modelBuilder.Entity("Discounts.Backend.Dal.Entities.Shop", b =>
                 {
                     b.Navigation("Promotions");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("Discounts.Backend.Dal.Entities.User", b =>
+                {
+                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }
