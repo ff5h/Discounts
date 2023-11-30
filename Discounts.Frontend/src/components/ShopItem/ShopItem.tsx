@@ -64,6 +64,15 @@ export const ShopItem = (props: Props) => {
             })
     },[])
 
+    const deleteHandler = () => {
+        console.log(props.data.id)
+        axiosPrivate.delete(`/api/Shop`, {params: {
+            id: props.data.id,
+        }}).then((resp:any) => {
+            console.log(resp)
+        })
+    }
+
     return(
         <ContainerWrapper>
             <InsideWrapper>
@@ -91,6 +100,12 @@ export const ShopItem = (props: Props) => {
                         </Button>
                     </ThemeProvider>
                 </RatingWrapper>
+                <Button variant="contained" onClick={() => {
+                    deleteHandler();
+                }
+                } size="medium" sx={{bgcolor:'blue.main', width: 300, height: 30}}>
+                    Delete
+                </Button>
             </InsideWrapper>
         </ContainerWrapper>
     );

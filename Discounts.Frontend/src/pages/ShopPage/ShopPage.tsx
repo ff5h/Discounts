@@ -48,8 +48,9 @@ type ProductType = {
     oldPrice: number,
     newPrice: number,
     categoryName: string,
-    categoryId: number,
-    promotionId: string
+    categoryId: string,
+    promotionId: string,
+    id: string
 }
 
 type CategoryType = {
@@ -96,33 +97,37 @@ export const ShopPage = (props: Props) => {
     }, [setShopData]);
 
     const handleOnClickPromotion = (promotionId: string) => {
-        axiosPrivate.get<ShopType>(`http://localhost:8080/api/Product/promotion/${promotionId}`).then((resp:any) => {
+        axiosPrivate.get<ProductType[]>(`http://localhost:8080/api/Product/promotion/${promotionId}`).then((resp:any) => {
             const products = resp.data;
             setProductData(products)
-            console.log(products)
         });
     }
 
     const [filter, setFilter] = useState('');
-    const uniqueCategory = useRef<Array<string>>()
+    const [promId, setPromId] = useState<string>()
+
+    const uniqueCategory = useRef<Array<{
+        id: number,
+        name: string
+    }>>()
 
     const handleChangeFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
-        // axiosPrivate.get(`http://localhost:8080/api/Product/promotion/${shopData?.promotions}/category/${productData?.categoryId}`).then((resp:any) => {
-        //     const allPersons = resp.data;
-        //
-        //     setProductData(allPersons);
-        //     console.log(uniqueCategory.current)
-        // });
+        console.log(event.target.value)
+        axiosPrivate.get<ProductType>(`http://localhost:8080/api/Product/promotion/${promId}/category/${event.target.value}`).then((resp:any) => {
+            const allPersons = resp.data;
+
+            setProductData(allPersons);
+            console.log(uniqueCategory.current)
+        });
     }
 
     useEffect(() => {
         axiosPrivate.get<CategoryType[]>(`http://localhost:8080/api/ProductCategory`).then((resp:any) => {
             const allPersons:CategoryType[] = resp.data;
-            uniqueCategory.current = Array.from(new Set(allPersons?.map(item => item.name)))
-            console.log(uniqueCategory.current)
+            uniqueCategory.current = Array.from(new Set(allPersons?.map(item => ({ id: item.id, name: item.name }))));
         });
-    })
+    },[])
 
 
     const onChangeHandler = (value:number | null) => {
@@ -132,11 +137,9 @@ export const ShopPage = (props: Props) => {
             userId: localStorage.getItem('userId'),
             value: value
         }
-        console.log(data.userId)
-        axiosPrivate.post<VoteType>(`http://localhost:8080/api/Shop/vote`, data).then((resp:any) => {
-            console.log(resp)
-        });
+        axiosPrivate.post<VoteType>(`http://localhost:8080/api/Shop/vote`, data).then();
     }
+
 
     return(
         <Wrapper>
@@ -173,6 +176,7 @@ export const ShopPage = (props: Props) => {
                                         return(
                                             <li key={index} onClick={() => {
                                                 handleOnClickPromotion(prom.id)
+                                                setPromId(prom.id)
                                             }
                                             }>
                                                 <DiscountComponent data={prom}/>
@@ -196,7 +200,7 @@ export const ShopPage = (props: Props) => {
                     {
                         uniqueCategory.current?.map((category, index) => {
                             return(
-                                <option key={index} value={`${category}`}>{category}</option>
+                                <option key={index} value={`${category.id}`}>{category.name}</option>
                             )
                         })
                     }

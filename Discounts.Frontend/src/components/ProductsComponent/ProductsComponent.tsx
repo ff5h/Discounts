@@ -1,8 +1,10 @@
 import {ContainerWrapper, InfoWrapper, InsideWrapper, ShopDataWrapper} from "./ProductsComponent.styled";
 import {useEffect, useState} from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Button from "@mui/material/Button";
 interface Props {
     data: {
+        id:string
         imageUrl: string,
         name: string,
         description: string,
@@ -27,7 +29,16 @@ export const ProductsComponent = (props: Props) => {
                 setImage(imageUrl);
             })
 
-    },[])
+    })
+    const deleteHandler = () => {
+        console.log(props.data.id)
+        axiosPrivate.delete(`/api/Product`, {params: {
+                id: props.data.id,
+            }}).then((resp:any) => {
+            console.log(resp)
+        })
+    }
+
 
     return(
         <ContainerWrapper>
@@ -49,6 +60,12 @@ export const ProductsComponent = (props: Props) => {
                         <p>{props.data.description}</p>
                     </div>
                 </InfoWrapper>
+                <Button variant="contained" onClick={() => {
+                    deleteHandler();
+                }
+                } size="medium" sx={{bgcolor:'blue.main', width: 400, height: 30}}>
+                    Delete
+                </Button>
             </InsideWrapper>
         </ContainerWrapper>
     );

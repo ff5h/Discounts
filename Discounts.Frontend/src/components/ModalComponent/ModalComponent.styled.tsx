@@ -13,6 +13,7 @@ export const Modal = styled.div`
   opacity: 0;
   pointer-events: none;
   transition: 0.5s;
+  z-index: 11;
   
   &.active{
     opacity: 1;

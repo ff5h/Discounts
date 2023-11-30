@@ -1,13 +1,20 @@
 import { styled } from 'styled-components'
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
-
+import {useState} from "react";
+import LoginForm from "../AuthComponent/LoginForm/LoginForm";
+import ModalComponent from "../ModalComponent/ModalComponent";
+import RegistrationForm from "../AuthComponent/RegistrationForm/RegistrationForm";
 interface Props {}
 
 const Header = (props: Props) => {
   const {} = props
 
-  return (
+    const [isLoginActive, setLoginActive] = useState(false);
+    const [isRegActive, setRegActive] = useState(false);
+
+
+    return (
       <Wrapper>
         <div>
           <p>
@@ -15,9 +22,20 @@ const Header = (props: Props) => {
           </p>
         </div>
         <div>
-            <Button variant="contained">AdminPanel</Button>
-            <Button variant="contained">Sign Up</Button>
+            <Button variant="contained" onClick={() => {
+                setRegActive(!isRegActive)}
+            }>Registration</Button>
+            <Button variant="contained" onClick={() => {
+                setLoginActive(!isLoginActive)}
+            }>Sign Up</Button>
+            <Button variant="contained" href={'/admin'}>AdminPanel</Button>
         </div>
+          <ModalComponent active={isLoginActive} setActive={setLoginActive}>
+              <LoginForm/>
+          </ModalComponent>
+          <ModalComponent active={isRegActive} setActive={setRegActive}>
+              <RegistrationForm/>
+          </ModalComponent>
       </Wrapper>
   )
 }
