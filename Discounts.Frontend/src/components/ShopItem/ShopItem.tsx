@@ -1,9 +1,10 @@
 import {ContainerWrapper, InfoWrapper, InsideWrapper, RatingWrapper, ShopDataWrapper} from "./ShopItem.styled";
-import shop from '../../images/shop.jpg';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import {createTheme, ThemeProvider} from "@mui/material";
+import {useEffect, useState} from "react";
+import {axiosPrivate} from "../../api/axios";
 interface Props {
     data:{
         id: string,
@@ -14,7 +15,8 @@ interface Props {
         city: string,
         address: string,
         companyId: string,
-        promotionIds: []
+        promotionIds: [],
+        imageUrl: string
     }
 }
 
@@ -50,12 +52,24 @@ const theme = createTheme({
 export const ShopItem = (props: Props) => {
     const {} = props
 
+    const [image, setImage] = useState<string | undefined>();
+    console.log(props.data)
+    useEffect(() => {
+        const path = props.data.imageUrl.replace(/\//g, "%2F")
+        axiosPrivate.get(`/api/File/${path}`, { responseType: 'arraybuffer' })
+            .then((response) => {
+                const blob = new Blob([response.data], { type: 'image/png' });
+                const imageUrl = URL.createObjectURL(blob);
+                setImage(imageUrl);
+            })
+    },[])
+
     return(
         <ContainerWrapper>
             <InsideWrapper>
                 <InfoWrapper>
                     <div>
-                        <img src={shop} alt=""/>
+                        <img src={image} alt=""/>
                     </div>
                     <ShopDataWrapper>
                         <h1>{props.data.name}</h1>

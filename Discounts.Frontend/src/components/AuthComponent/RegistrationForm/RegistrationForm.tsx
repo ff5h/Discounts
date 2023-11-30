@@ -6,7 +6,7 @@ import unlock from '../../../images/lock-open-outline.svg'
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from 'yup'
-import {axiosPublic} from "../../../api/axios";
+import {axiosPrivate} from "../../../api/axios";
 
 const withoutSpace= /^\S+$/;
 
@@ -41,7 +41,7 @@ const RegistrationForm = (props: Props) => {
     });
 
     const onSubmit = (data:UserData) => {
-        axiosPublic.post<UserData>("http://localhost:8080/api/Account/register", data).then((resp:any) => console.log(resp));
+        axiosPrivate.post<UserData>("http://localhost:8080/api/Account/register", data).then((resp:any) => console.log(resp));
     }
 
     const [isPasswordShown, setPasswordShown] = useState(false);

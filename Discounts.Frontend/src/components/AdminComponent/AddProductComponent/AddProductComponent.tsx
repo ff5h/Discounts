@@ -1,6 +1,7 @@
 import {ChangeEvent, FormEvent, useState} from "react";
-import {axiosImage, axiosPublic} from "../../../api/axios";
 import {FormWrapper} from "./AddProductComponent.styled";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAxiosImage from "../../../hooks/useAxiosImage";
 
 interface Props {
 
@@ -22,7 +23,8 @@ interface ImageType {
 
 export const AddProductComponent = (props: Props) => {
     const {} = props
-
+    const axiosPrivate = useAxiosPrivate()
+    const axiosImage = useAxiosImage()
     const [data, setData] = useState({
         imageUrl: '',
         name: '',
@@ -70,7 +72,7 @@ export const AddProductComponent = (props: Props) => {
                     categoryId: data.categoryId,
                     promotionId: data.promotionId
                 };
-                axiosPublic.post<InputType>("http://localhost:8080/api/Product", productData).then((resp:any) => console.log(resp));
+                axiosPrivate.post<InputType>("http://localhost:8080/api/Product", productData).then((resp:any) => console.log(resp));
             })
         }
         setData(

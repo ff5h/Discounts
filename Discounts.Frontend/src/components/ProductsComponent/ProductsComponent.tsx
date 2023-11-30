@@ -1,5 +1,6 @@
 import {ContainerWrapper, InfoWrapper, InsideWrapper, ShopDataWrapper} from "./ProductsComponent.styled";
-import shop from "../../images/shop.jpg"
+import {useEffect, useState} from "react";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 interface Props {
     data: {
         imageUrl: string,
@@ -14,11 +15,25 @@ interface Props {
 
 export const ProductsComponent = (props: Props) => {
     const {} = props
+    const axiosPrivate = useAxiosPrivate()
+    const [image, setImage] = useState<string>('');
+
+    useEffect(() => {
+        const path = props.data.imageUrl.replace(/\//g, "%2F")
+        axiosPrivate.get(`/api/File/${path}`, { responseType: 'arraybuffer' })
+            .then((response) => {
+                const blob = new Blob([response.data], { type: 'image/png' });
+                const imageUrl = URL.createObjectURL(blob);
+                setImage(imageUrl);
+            })
+
+    },[])
+
     return(
         <ContainerWrapper>
             <InsideWrapper>
                 <InfoWrapper>
-                    <img src={shop} alt=""/>
+                    <img src={image} alt=""/>
                     <ShopDataWrapper>
                         <div>
                             <h1>{props.data.name}</h1>

@@ -1,4 +1,4 @@
-import {axiosPrivate, axiosPublic} from "../api/axios";
+import {axiosImage, axiosPublic} from "../api/axios";
 import { useEffect } from "react";
 import {jwtDecode} from "jwt-decode";
 
@@ -20,11 +20,11 @@ const refreshRequest = () => {
     })
 }
 
-const useAxiosPrivate = () => {
+const useAxiosImage = () => {
     const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
-        const requestIntercept = axiosPrivate.interceptors.request.use(
+        const requestIntercept = axiosImage.interceptors.request.use(
             (config) => {
                 if (!config.headers["Authorization"]) {
                     config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -34,26 +34,26 @@ const useAxiosPrivate = () => {
             (error) => Promise.reject(error)
         );
 
-        const responseIntercept = axiosPrivate.interceptors.response.use(
+        const responseIntercept = axiosImage.interceptors.response.use(
             (response) => response,
             async (error) => {
                 const prevRequest = error?.config;
                 if (error?.response?.status === 403 && !prevRequest?.sent) {
                     prevRequest.sent = true;
                     refreshRequest();
-                    return axiosPrivate(prevRequest);
+                    return axiosImage(prevRequest);
                 }
                 return Promise.reject(error);
             }
         );
 
         return () => {
-            axiosPrivate.interceptors.request.eject(requestIntercept);
-            axiosPrivate.interceptors.response.eject(responseIntercept);
+            axiosImage.interceptors.request.eject(requestIntercept);
+            axiosImage.interceptors.response.eject(responseIntercept);
         };
     }, []);
 
-    return axiosPrivate;
+    return axiosImage;
 };
 
-export default useAxiosPrivate;
+export default useAxiosImage;

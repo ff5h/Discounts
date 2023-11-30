@@ -6,7 +6,7 @@ import {
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import {useEffect, useState} from "react";
-import {axiosPublic} from "../../api/axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 type Props = {
     data:{
@@ -22,12 +22,19 @@ export const CompanyItem = (props: Props) => {
 
     const [image, setImage] = useState<string | null>(null);
 
+    const axiosPrivate = useAxiosPrivate()
+
     useEffect(() => {
         const path = props.data.imageUrl.replace(/\//g, "%2F")
-        axiosPublic.get(`/api/File/${path}`).then((resp:any) => {
-            setImage(resp.request.responseURL)
-        })
-
+        axiosPrivate.get(`/api/File/${path}`, { responseType: 'arraybuffer' })
+            .then((response) => {
+                const blob = new Blob([response.data], { type: 'image/png' });
+                const imageUrl = URL.createObjectURL(blob);
+                setImage(imageUrl);
+            })
+            .catch((error) => {
+                console.error('Error fetching image:', error);
+            });
     },[])
 
     return(

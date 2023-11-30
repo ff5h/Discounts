@@ -1,6 +1,6 @@
 import {ChangeEvent, FormEvent, useState} from "react";
-import {axiosPublic} from "../../../api/axios";
 import {FormWrapper} from "./AddProductCategoryComponent.styled";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 interface Props {
 
@@ -12,7 +12,7 @@ type InputType = {
 
 export const AddProductCategoryComponent = (props: Props) => {
     const {} = props
-
+    const axiosPrivate = useAxiosPrivate()
     const [data, setData] = useState({
         name: ''
     });
@@ -30,7 +30,7 @@ export const AddProductCategoryComponent = (props: Props) => {
         const productCategoryData = {
             name: data.name
         };
-        axiosPublic.post<InputType>("http://localhost:8080/api/ProductCategory", productCategoryData).then((resp:any) => console.log(resp));
+        axiosPrivate.post<InputType>("http://localhost:8080/api/ProductCategory", productCategoryData).then((resp:any) => console.log(resp));
         console.log(productCategoryData)
     };
 

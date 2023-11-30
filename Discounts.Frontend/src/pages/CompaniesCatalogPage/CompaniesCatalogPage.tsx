@@ -4,9 +4,9 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import {useEffect, useRef, useState} from "react";
 import ShopItem from "../../components/ShopItem/ShopItem";
-import {axiosPublic} from "../../api/axios";
 import {formatTimestampToHHMM} from "../../../src/utils/utils";
 import * as React from "react";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 interface Props {
 }
 
@@ -27,7 +27,8 @@ type ShopType = {
     city: string,
     address: string,
     companyId: string,
-    promotionIds: []
+    promotionIds: [],
+    imageUrl: string
 }
 export const CompaniesCatalogPage = (props: Props) => {
     const {} = props
@@ -37,7 +38,7 @@ export const CompaniesCatalogPage = (props: Props) => {
         mobile: {breakpoint: { max: 965, min: 0 }, items: 3}}
 
     const [header, setHeader] = useState(false);
-
+    const axiosPrivate = useAxiosPrivate();
     const changeHeaderShadow = () => {
         if (window.scrollY >= 30){
             setHeader(true);
@@ -51,7 +52,7 @@ export const CompaniesCatalogPage = (props: Props) => {
     const [companyState, setCompanyState] = useState<CompanyType[]>();
 
     useEffect(() => {
-        axiosPublic.get('http://localhost:8080/api/Company').then((resp:any) => {
+        axiosPrivate.get('http://localhost:8080/api/Company').then((resp:any) => {
             const allPersons = resp.data;
             setCompanyState(allPersons);
         });
@@ -62,7 +63,8 @@ export const CompaniesCatalogPage = (props: Props) => {
     const [state, setState] = useState<boolean>()
 
     useEffect(() => {
-        axiosPublic.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp:any) => {
+        axiosPrivate.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp:any) => {
+            console.log(companyId)
             const shopData:ShopType[] = resp.data;
 
             const formattedShopData = shopData.map((shop:any) => ({
@@ -85,7 +87,7 @@ export const CompaniesCatalogPage = (props: Props) => {
 
     const handleChangeFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
-        axiosPublic.get(`http://localhost:8080/api/Shop/company/${companyId}/city/${event.target.value}`).then((resp:any) => {
+        axiosPrivate.get(`http://localhost:8080/api/Shop/company/${companyId}/city/${event.target.value}`).then((resp:any) => {
             const allPersons = resp.data;
             const formattedShopData = allPersons.map((shop:any) => ({
                 ...shop,

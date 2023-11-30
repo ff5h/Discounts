@@ -7,7 +7,6 @@ import {
     ProductWrapper,
     FilterWrapper
 } from "./ShopPage.styled";
-import shop from '../../images/shop.jpg'
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import * as React from "react";
@@ -16,9 +15,8 @@ import DiscountComponent from "../../components/DiscountsComponent/DiscountsComp
 import ProductsComponent from "../../components/ProductsComponent/ProductsComponent";
 import {useParams} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
-import {axiosPublic} from "../../api/axios";
 import {formatTimestampToHHMM} from "../../utils/utils";
-
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 interface Props {}
 
 type PromotionType = {
@@ -39,7 +37,8 @@ type ShopType = {
     address: string,
     companyId: string,
     promotions: PromotionType[],
-    amountOfVote:number
+    amountOfVote:number,
+    imageUrl: string,
 }
 
 type ProductType = {
@@ -67,18 +66,28 @@ type VoteType = {
 
 export const ShopPage = (props: Props) => {
     const {} = props
+    const axiosPrivate = useAxiosPrivate()
     const {id} = useParams();
     const [shopData, setShopData] = useState<ShopType>()
     const [value, setValue] = React.useState<number | null | undefined>(shopData?.rating);
     const [productData, setProductData] = useState<ProductType[]>()
+    const [image, setImage] = useState<string | undefined>();
 
     useEffect(() => {
-        axiosPublic.get<ShopType>(`http://localhost:8080/api/Shop/${id}`).then((resp:any) => {
+        axiosPrivate.get<ShopType>(`http://localhost:8080/api/Shop/${id}`).then((resp:any) => {
             const allPersons = resp.data;
+            const path = resp.data.imageUrl.replace(/\//g, "%2F")
+            axiosPrivate.get(`/api/File/${path}`, { responseType: 'arraybuffer' })
+                .then((response) => {
+                    const blob = new Blob([response.data], { type: 'image/png' });
+                    const imageUrl = URL.createObjectURL(blob);
+                    setImage(imageUrl);
+                })
             const formattedShopData = () => ({
                 ...allPersons,
                 openTime: formatTimestampToHHMM(allPersons.openTime),
                 closeTime: formatTimestampToHHMM(allPersons.closeTime),
+                imageUrl: resp.data.imageUrl
             })
 
             setShopData(formattedShopData);
@@ -87,7 +96,7 @@ export const ShopPage = (props: Props) => {
     }, [setShopData]);
 
     const handleOnClickPromotion = (promotionId: string) => {
-        axiosPublic.get<ShopType>(`http://localhost:8080/api/Product/promotion/${promotionId}`).then((resp:any) => {
+        axiosPrivate.get<ShopType>(`http://localhost:8080/api/Product/promotion/${promotionId}`).then((resp:any) => {
             const products = resp.data;
             setProductData(products)
             console.log(products)
@@ -99,7 +108,7 @@ export const ShopPage = (props: Props) => {
 
     const handleChangeFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
-        // axiosPublic.get(`http://localhost:8080/api/Product/promotion/${shopData?.promotions}/category/${productData?.categoryId}`).then((resp:any) => {
+        // axiosPrivate.get(`http://localhost:8080/api/Product/promotion/${shopData?.promotions}/category/${productData?.categoryId}`).then((resp:any) => {
         //     const allPersons = resp.data;
         //
         //     setProductData(allPersons);
@@ -108,7 +117,7 @@ export const ShopPage = (props: Props) => {
     }
 
     useEffect(() => {
-        axiosPublic.get<CategoryType[]>(`http://localhost:8080/api/ProductCategory`).then((resp:any) => {
+        axiosPrivate.get<CategoryType[]>(`http://localhost:8080/api/ProductCategory`).then((resp:any) => {
             const allPersons:CategoryType[] = resp.data;
             uniqueCategory.current = Array.from(new Set(allPersons?.map(item => item.name)))
             console.log(uniqueCategory.current)
@@ -124,7 +133,7 @@ export const ShopPage = (props: Props) => {
             value: value
         }
         console.log(data.userId)
-        axiosPublic.post<VoteType>(`http://localhost:8080/api/Shop/vote`, data).then((resp:any) => {
+        axiosPrivate.post<VoteType>(`http://localhost:8080/api/Shop/vote`, data).then((resp:any) => {
             console.log(resp)
         });
     }
@@ -132,7 +141,7 @@ export const ShopPage = (props: Props) => {
     return(
         <Wrapper>
             <Container>
-                <img src={shop} alt=""/>
+                <img src={image} alt=""/>
                 <InfoWrapper>
                     <ShopRatingWrapper>
                         <p>{shopData?.name}</p>

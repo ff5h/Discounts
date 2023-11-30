@@ -6,7 +6,7 @@ import unlock from '../../../images/lock-open-outline.svg'
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from 'yup'
-import {axiosPublic} from "../../../api/axios";
+import {axiosPrivate} from "../../../api/axios";
 import { jwtDecode } from 'jwt-decode'
 
 const schema = yup.object({
@@ -40,13 +40,13 @@ const LoginForm = (props:Props) => {
     });
 
     const onSubmit = (data:UserData) => {
-        axiosPublic.post<UserData>("http://localhost:8080/api/Account/login", data).then((resp:any) => {
+        axiosPrivate.post<UserData>("http://localhost:8080/api/Account/login", data).then((resp:any) => {
             const {accessToken, refreshToken} = resp.data;
             console.log(resp.data)
             const token:Token = jwtDecode(accessToken);
             localStorage.setItem('userId', token.nameid)
-            localStorage.setItem('accessToken', JSON.stringify(accessToken))
-            localStorage.setItem('refreshToken', JSON.stringify(refreshToken))
+            localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('refreshToken', refreshToken)
         })
     }
 

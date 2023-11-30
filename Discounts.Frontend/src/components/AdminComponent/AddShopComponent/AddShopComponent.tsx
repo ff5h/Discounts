@@ -1,6 +1,7 @@
 import {ChangeEvent, FormEvent, useState} from "react";
-import {axiosPublic} from "../../../api/axios";
 import {FormWrapper} from "./AddShopComponent.styled";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAxiosImage from "../../../hooks/useAxiosImage";
 
 interface Props {
 
@@ -12,18 +13,21 @@ type InputType = {
     closeTime: string,
     city: string,
     address: string,
-    companyId: string
+    companyId: string,
+    imageUrl: string
 }
 
 export const AddShopComponent = (props: Props) => {
     const {} = props
-
+    const axiosPrivate = useAxiosPrivate()
+    const axiosImage = useAxiosImage()
     const [data, setData] = useState({
         name: '',
         openTime: '',
         closeTime: '',
         city: '',
         address: '',
+        imageUrl: '',
         companyId: ''
     });
 
@@ -35,18 +39,39 @@ export const AddShopComponent = (props: Props) => {
         });
     };
 
+
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleChangeFile = (e:ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+        const values = e.target.value;
+        setData({
+            ...data,
+            [e.target.name]: values
+        });
+    };
+
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const companyData = {
-            name: data.name,
-            openTime: new Date(data.openTime).toISOString(),
-            closeTime: new Date(data.closeTime).toISOString(),
-            city: data.city,
-            address: data.address,
-            companyId: data.companyId
-        };
-        axiosPublic.post<InputType>("/api/Shop", companyData).then((resp:any) => console.log(resp));
-        console.log(companyData)
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            axiosImage.post<InputType>("http://localhost:8080/api/File", formData).then((resp:any) => {
+                const shopData = {
+                    name: data.name,
+                    openTime: new Date(data.openTime).toISOString(),
+                    closeTime: new Date(data.closeTime).toISOString(),
+                    city: data.city,
+                    address: data.address,
+                    imageUrl: resp.data,
+                    companyId: data.companyId
+                };
+                console.log(resp.data)
+                axiosPrivate.post<InputType>("/api/Shop", shopData).then((resp:any) => console.log(resp));
+            })
+        }
     };
 
     return(
@@ -104,6 +129,15 @@ export const AddShopComponent = (props: Props) => {
                         name="companyId"
                         value={data.companyId}
                         onChange={handleChange}
+                    />
+                </label>
+                <label htmlFor="imageUrl">
+                    Image
+                    <input
+                        type="file"
+                        name="imageUrl"
+                        value={data.imageUrl}
+                        onChange={handleChangeFile}
                     />
                 </label>
                 <button type="submit">Add</button>

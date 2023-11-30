@@ -1,6 +1,6 @@
 import {ChangeEvent, FormEvent, useState} from "react";
-import {axiosPublic} from "../../../api/axios";
 import {FormWrapper} from "./AddPromotionComponent.styled";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 interface Props {
 
@@ -15,7 +15,7 @@ type InputType = {
 
 export const AddPromotionComponent = (props: Props) => {
     const {} = props
-
+    const axiosPrivate = useAxiosPrivate()
     const [data, setData] = useState({
         title: '',
         dateStart: '',
@@ -39,7 +39,7 @@ export const AddPromotionComponent = (props: Props) => {
             endTime: new Date(data.dateEnd).toISOString(),
             shopId: data.shopId
         };
-        axiosPublic.post<InputType>("http://localhost:8080/api/Promotion", companyData).then((resp:any) => console.log(resp));
+        axiosPrivate.post<InputType>("http://localhost:8080/api/Promotion", companyData).then((resp:any) => console.log(resp));
         console.log(companyData)
     };
 

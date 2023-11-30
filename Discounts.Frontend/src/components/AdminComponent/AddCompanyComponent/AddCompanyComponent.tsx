@@ -1,6 +1,8 @@
 import {ChangeEvent, FormEvent, useState} from "react";
 import {FormWrapper} from "./AddCompanyComponent.styled";
-import {axiosImage, axiosPublic} from "../../../api/axios";
+// import {axiosImage} from "../../../api/axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAxiosImage from "../../../hooks/useAxiosImage";
 
 interface Props {
 
@@ -17,6 +19,9 @@ interface ImageType {
 
 export const AddCompanyComponent = (props: Props) => {
     const {} = props
+    const axiosPrivate = useAxiosPrivate()
+    const axiosImage = useAxiosImage()
+
 
     const [data, setData] = useState({
         name: '',
@@ -42,6 +47,7 @@ export const AddCompanyComponent = (props: Props) => {
             });
     };
 
+
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (file) {
@@ -53,7 +59,7 @@ export const AddCompanyComponent = (props: Props) => {
                     imageUrl: resp.data
                 }
                 console.log(resp.data)
-                axiosPublic.post<InputType>("http://localhost:8080/api/Company", companyData).then((resp:any) => console.log(resp));
+                axiosPrivate.post<InputType>("http://localhost:8080/api/Company", companyData).then((resp:any) => console.log(resp));
             })
         }
     };
