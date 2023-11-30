@@ -41,10 +41,23 @@ namespace Discounts.Backend.Auth.Core.Implementations
         {
             var companies = await _context.Companies.Include(x => x.Shops).ToListAsync();
             var dtos = _mapper.Map<IReadOnlyCollection<CompanyDto>>(companies);
-            // get rating of company logic
             foreach (var dto in dtos)
             {
-                dto.Rating = 5; //stub
+                // Calculate the average rating for each shop
+                var shopRatings = _context.Votes
+                    .Where(vote => dto.ShopsId.Contains(vote.ShopId))
+                    .GroupBy(vote => vote.ShopId)
+                    .ToDictionary(group => group.Key, group => group.Average(vote => vote.Value));
+
+                // Calculate the average rating for the company based on shop ratings
+                if (shopRatings.Any())
+                {
+                    dto.Rating = shopRatings.Values.Average();
+                }
+                else
+                {
+                    dto.Rating = 0; // or set it to any default value
+                }
             }
             return dtos;
         }
