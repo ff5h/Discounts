@@ -39,6 +39,10 @@ const LoginForm = (props:Props) => {
         mode: 'all'
     });
 
+    const handleRefresh = () => {
+        window.location.reload();
+    };
+
     const onSubmit = (data:UserData) => {
         axiosPrivate.post<UserData>("http://localhost:8080/api/Account/login", data).then((resp:any) => {
             const {accessToken, refreshToken} = resp.data;
@@ -48,6 +52,7 @@ const LoginForm = (props:Props) => {
             localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
             localStorage.setItem('role', 'user')
+            handleRefresh();
 
         })
     }
