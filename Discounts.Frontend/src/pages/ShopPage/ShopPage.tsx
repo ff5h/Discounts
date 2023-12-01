@@ -17,6 +17,13 @@ import {useParams} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {formatTimestampToHHMM} from "../../utils/utils";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Button from "@mui/material/Button";
+import {ButtonWrapper} from "../AdminPage/AdminPage.styled";
+import ModalComponent from "../../components/ModalComponent/ModalComponent";
+import AddProductComponent from "../../components/AdminComponent/AddProductComponent/AddProductComponent";
+import AddProductCategoryComponent
+    from "../../components/AdminComponent/AddProductCategoryComponent/AddProductCategoryComponent";
+import AddPromotionComponent from "../../components/AdminComponent/AddPromotionComponent/AddPromotionComponent";
 interface Props {}
 
 type PromotionType = {
@@ -67,12 +74,18 @@ type VoteType = {
 
 export const ShopPage = (props: Props) => {
     const {} = props
+
     const axiosPrivate = useAxiosPrivate()
     const {id} = useParams();
     const [shopData, setShopData] = useState<ShopType>()
-    const [value, setValue] = React.useState<number | null | undefined>(shopData?.rating);
     const [productData, setProductData] = useState<ProductType[]>()
     const [image, setImage] = useState<string | undefined>();
+    const [value, setValue] = React.useState<number | null | undefined>();
+
+    const [addProductModal, setAddProductModal] = useState(false);
+    const [addProductCategoryModal, setAddProductCategoryModal] = useState(false);
+    const [addPromotionModal, setAddPromotionModal] = useState(false);
+
 
     useEffect(() => {
         axiosPrivate.get<ShopType>(`http://localhost:8080/api/Shop/${id}`).then((resp:any) => {
@@ -189,6 +202,23 @@ export const ShopPage = (props: Props) => {
                     </div>
                 </InfoWrapper>
             </Container>
+            {localStorage.getItem('role') == 'admin'
+            ?<ButtonWrapper>
+                    <Button onClick={() => setAddProductModal(true)} variant="contained">Add Product</Button>
+                    <Button onClick={() => setAddProductCategoryModal(true)} variant="contained">Add ProductCategory</Button>
+                    <Button onClick={() => setAddPromotionModal(true)} variant="contained">Add Promotion</Button>
+                </ButtonWrapper>
+                : <></>
+            }
+            <ModalComponent active={addProductModal} setActive={setAddProductModal}>
+                <AddProductComponent promotions={shopData?.promotions}/>
+            </ModalComponent>
+            <ModalComponent active={addProductCategoryModal} setActive={setAddProductCategoryModal}>
+                <AddProductCategoryComponent/>
+            </ModalComponent>
+            <ModalComponent active={addPromotionModal} setActive={setAddPromotionModal}>
+                <AddPromotionComponent shopId={id}/>
+            </ModalComponent>
             <FilterWrapper>
                 <label htmlFor="filter">Filter: </label>
                 <select

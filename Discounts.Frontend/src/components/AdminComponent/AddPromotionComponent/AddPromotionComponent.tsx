@@ -3,7 +3,7 @@ import {FormWrapper} from "./AddPromotionComponent.styled";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 interface Props {
-
+    shopId: string | undefined
 }
 
 type InputType = {
@@ -31,16 +31,16 @@ export const AddPromotionComponent = (props: Props) => {
         });
     };
 
+
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const companyData = {
             title: data.title,
             startTime: new Date(data.dateStart).toISOString(),
             endTime: new Date(data.dateEnd).toISOString(),
-            shopId: data.shopId
+            shopId: props.shopId
         };
         axiosPrivate.post<InputType>("http://localhost:8080/api/Promotion", companyData).then((resp:any) => console.log(resp));
-        console.log(companyData)
     };
 
     return(
@@ -78,7 +78,7 @@ export const AddPromotionComponent = (props: Props) => {
                     <input
                         type="text"
                         name="shopId"
-                        value={data.shopId}
+                        value={props.shopId}
                         onChange={handleChange}
                     />
                 </label>

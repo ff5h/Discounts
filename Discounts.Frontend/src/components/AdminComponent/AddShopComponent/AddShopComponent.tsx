@@ -4,7 +4,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAxiosImage from "../../../hooks/useAxiosImage";
 
 interface Props {
-
+    companyId: string
 }
 
 type InputType = {
@@ -53,6 +53,9 @@ export const AddShopComponent = (props: Props) => {
         });
     };
 
+    const handleRefresh = () => {
+        window.location.reload();
+    };
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (file) {
@@ -66,11 +69,12 @@ export const AddShopComponent = (props: Props) => {
                     city: data.city,
                     address: data.address,
                     imageUrl: resp.data,
-                    companyId: data.companyId
+                    companyId: props.companyId
                 };
-                console.log(resp.data)
+                console.log(shopData)
                 axiosPrivate.post<InputType>("/api/Shop", shopData).then((resp:any) => console.log(resp));
             })
+            handleRefresh()
         }
     };
 
@@ -127,7 +131,7 @@ export const AddShopComponent = (props: Props) => {
                     <input
                         type="text"
                         name="companyId"
-                        value={data.companyId}
+                        value={props.companyId}
                         onChange={handleChange}
                     />
                 </label>

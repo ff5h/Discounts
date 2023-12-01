@@ -53,7 +53,7 @@ export const ShopItem = (props: Props) => {
     const {} = props
 
     const [image, setImage] = useState<string | undefined>();
-    console.log(props.data)
+
     useEffect(() => {
         const path = props.data.imageUrl.replace(/\//g, "%2F")
         axiosPrivate.get(`/api/File/${path}`, { responseType: 'arraybuffer' })
@@ -62,7 +62,7 @@ export const ShopItem = (props: Props) => {
                 const imageUrl = URL.createObjectURL(blob);
                 setImage(imageUrl);
             })
-    },[])
+    })
 
     const deleteHandler = () => {
         console.log(props.data.id)
@@ -100,12 +100,15 @@ export const ShopItem = (props: Props) => {
                         </Button>
                     </ThemeProvider>
                 </RatingWrapper>
-                <Button variant="contained" onClick={() => {
-                    deleteHandler();
+                {localStorage.getItem('role') == 'admin'
+                ? <Button variant="contained" onClick={() => {
+                        deleteHandler();
+                    }
+                    } size="medium" sx={{bgcolor:'blue.main', width: 300, height: 30}}>
+                        Delete
+                    </Button>
+                    : <></>
                 }
-                } size="medium" sx={{bgcolor:'blue.main', width: 300, height: 30}}>
-                    Delete
-                </Button>
             </InsideWrapper>
         </ContainerWrapper>
     );

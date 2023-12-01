@@ -47,6 +47,8 @@ const LoginForm = (props:Props) => {
             localStorage.setItem('userId', token.nameid)
             localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
+            localStorage.setItem('role', 'user')
+
         })
     }
 
@@ -57,7 +59,6 @@ const LoginForm = (props:Props) => {
         setPasswordShown(!isPasswordShown)
     }
 
-    console.log(errors.password?.message)
 
     return (
         <section>

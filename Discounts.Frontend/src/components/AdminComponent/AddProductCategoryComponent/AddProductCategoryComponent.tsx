@@ -32,6 +32,10 @@ export const AddProductCategoryComponent = (props: Props) => {
         };
         axiosPrivate.post<InputType>("http://localhost:8080/api/ProductCategory", productCategoryData).then((resp:any) => console.log(resp));
         console.log(productCategoryData)
+        handleRefresh()
+    };
+    const handleRefresh = () => {
+        window.location.reload();
     };
 
     return(

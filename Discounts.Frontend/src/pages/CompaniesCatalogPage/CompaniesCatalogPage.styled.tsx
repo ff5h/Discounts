@@ -34,9 +34,19 @@ export const SubWrapper = styled.div`
 `;
 
 export const FilterWrapper = styled.div`
-  margin: 0.5rem 3rem;
+  margin: 1rem 3rem;
   font-size: 1.25rem;
   select{
     font-size: 1rem;
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+  
+  button{
+    margin: 0 0.5rem;
   }
 `;

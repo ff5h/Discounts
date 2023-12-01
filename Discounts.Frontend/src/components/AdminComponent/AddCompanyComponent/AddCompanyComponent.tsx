@@ -47,6 +47,9 @@ export const AddCompanyComponent = (props: Props) => {
             });
     };
 
+    const handleRefresh = () => {
+        window.location.reload();
+    };
 
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -60,6 +63,7 @@ export const AddCompanyComponent = (props: Props) => {
                 }
                 console.log(resp.data)
                 axiosPrivate.post<InputType>("http://localhost:8080/api/Company", companyData).then((resp:any) => console.log(resp));
+                handleRefresh()
             })
         }
     };

@@ -60,12 +60,15 @@ export const ProductsComponent = (props: Props) => {
                         <p>{props.data.description}</p>
                     </div>
                 </InfoWrapper>
-                <Button variant="contained" onClick={() => {
-                    deleteHandler();
+                {localStorage.getItem('role') == 'admin'
+                ?<Button variant="contained" onClick={() => {
+                        deleteHandler();
+                    }
+                    } size="medium" sx={{bgcolor:'blue.main', width: 400, height: 30}}>
+                        Delete
+                    </Button>
+                    : <></>
                 }
-                } size="medium" sx={{bgcolor:'blue.main', width: 400, height: 30}}>
-                    Delete
-                </Button>
             </InsideWrapper>
         </ContainerWrapper>
     );

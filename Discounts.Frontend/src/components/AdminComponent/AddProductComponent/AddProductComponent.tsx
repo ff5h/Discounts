@@ -1,9 +1,23 @@
-import {ChangeEvent, FormEvent, useState} from "react";
+import {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
 import {FormWrapper} from "./AddProductComponent.styled";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAxiosImage from "../../../hooks/useAxiosImage";
 
 interface Props {
+    promotions: PromotionType[] | undefined
+}
+
+type CategoryType = {
+    id: number,
+    name: string
+}
+
+
+type PromotionType = {
+    id: string,
+    title: string,
+    startTime: string,
+    endTime: string,
 
 }
 
@@ -57,6 +71,18 @@ export const AddProductComponent = (props: Props) => {
         });
     };
 
+    const uniqueCategory = useRef<Array<{
+        id: number,
+        name: string
+    }>>()
+
+    useEffect(() => {
+        axiosPrivate.get<CategoryType[]>(`http://localhost:8080/api/ProductCategory`).then((resp:any) => {
+            const allPersons:CategoryType[] = resp.data;
+            uniqueCategory.current = Array.from(new Set(allPersons?.map(item => ({ id: item.id, name: item.name }))));
+        });
+    },[])
+
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (file) {
@@ -74,6 +100,7 @@ export const AddProductComponent = (props: Props) => {
                 };
                 axiosPrivate.post<InputType>("http://localhost:8080/api/Product", productData).then((resp:any) => console.log(resp));
             })
+            handleRefresh()
         }
         setData(
             {
@@ -86,6 +113,10 @@ export const AddProductComponent = (props: Props) => {
                 promotionId: ''
             }
         )
+    };
+
+    const handleRefresh = () => {
+        window.location.reload();
     };
 
     return(
@@ -129,21 +160,50 @@ export const AddProductComponent = (props: Props) => {
                 </label>
                 <label htmlFor="categoryId">
                     Category Id
-                    <input
-                        type="number"
-                        name="categoryId"
-                        value={data.categoryId}
-                        onChange={handleChange}
-                    />
+                <select
+                    name="categoryId"
+                    value={data.categoryId}
+                    onChange={(_e) => {
+                        const values = _e.target.value;
+                        setData({
+                            ...data,
+                            [_e.target.name]: values
+                        });
+                    }}
+                >
+                    <option value="">-- Please Select --</option>
+                    {
+                        uniqueCategory.current?.map((category, index) => {
+                            return(
+                                <option key={index} value={`${category.id}`}>{category.name}</option>
+                            )
+                        })
+                    }
+                </select>
                 </label>
                 <label htmlFor="promotionId">
                     Promotion Id
-                    <input
-                        type="text"
+                    <select
                         name="promotionId"
                         value={data.promotionId}
-                        onChange={handleChange}
-                    />
+                        onChange={(_e) => {
+                            const values = _e.target.value;
+                            setData({
+                                ...data,
+                                [_e.target.name]: values
+                            });
+                        }
+                        }
+                    >
+                        <option value="">-- Please Select --</option>
+                        {
+                            props.promotions?.map((promotion, index) => {
+                                return(
+                                    <option key={index} value={`${promotion.id}`}>{promotion.title}</option>
+                                )
+                            })
+                        }
+                    </select>
                 </label>
                 <label htmlFor="imageUrl">
                     Image

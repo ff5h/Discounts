@@ -5,7 +5,7 @@ export const FormWrapper = styled.div`
     display: flex;
     flex-direction: column; 
     
-    input{
+    input, select{
       margin: 10px 10px;
     }
   }

@@ -1,4 +1,4 @@
-import {CarouselWrapper, Container, FilterWrapper, SubWrapper} from "./CompaniesCatalogPage.styled";
+import {ButtonWrapper, CarouselWrapper, Container, FilterWrapper, SubWrapper} from "./CompaniesCatalogPage.styled";
 import CompanyItem from "../../components/CompanyItem/CompanyItem";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -7,6 +7,10 @@ import ShopItem from "../../components/ShopItem/ShopItem";
 import {formatTimestampToHHMM} from "../../../src/utils/utils";
 import * as React from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import AddCompanyComponent from "../../components/AdminComponent/AddCompanyComponent/AddCompanyComponent";
+import ModalComponent from "../../components/ModalComponent/ModalComponent";
+import AddShopComponent from "../../components/AdminComponent/AddShopComponent/AddShopComponent";
+import Button from "@mui/material/Button";
 interface Props {
 }
 
@@ -61,10 +65,11 @@ export const CompaniesCatalogPage = (props: Props) => {
     const [companyId, setCompanyId] = useState<string | null>('');
     const [shopState, setShopState] = useState<ShopType[]>();
     const [state, setState] = useState<boolean>()
+    const [compId, setCompID] = useState('');
+
 
     useEffect(() => {
         axiosPrivate.get<ShopType[]>(`http://localhost:8080/api/Shop/company/${companyId}`).then((resp:any) => {
-            console.log(companyId)
             const shopData:ShopType[] = resp.data;
 
             const formattedShopData = shopData.map((shop:any) => ({
@@ -76,10 +81,11 @@ export const CompaniesCatalogPage = (props: Props) => {
             setShopState(formattedShopData);
             uniqueCities.current = Array.from(new Set(shopData?.map(item => item.city)))
         });
-    }, [companyId, state])
+    }, [companyId, state, compId])
 
     const onClickHandler = (id:string) => {
         setCompanyId(id);
+        console.log(id)
     }
 
     const [filter, setFilter] = useState('');
@@ -96,11 +102,13 @@ export const CompaniesCatalogPage = (props: Props) => {
             }));
 
             setShopState(formattedShopData);
-            console.log(uniqueCities.current)
         });
     }
 
 
+
+    const [addCompanyModal, setAddCompanyModal] = useState(false);
+    const [addShopModal, setAddShopModal] = useState(false);
 
     return(
         <Container>
@@ -124,19 +132,32 @@ export const CompaniesCatalogPage = (props: Props) => {
                     renderDotsOutside={false}
                     responsive={responsive}>
                         {companyState ?
-
                             companyState?.map((company, index) => {
                             return(
                                 <div key={index} onClick={() =>{
                                     onClickHandler(company.id)
+                                    setCompID(company.id)
                                 }}>
-                                    <CompanyItem data={company}/>
+                                    <CompanyItem photo={company.imageUrl} active={addShopModal} setActive={setAddShopModal} data={company}/>
                                 </div>
                             )
                         })
                         : <div></div>}
                 </Carousel>
             </CarouselWrapper>
+            {localStorage.getItem('role') == 'admin' ?
+                <div>
+                    <ButtonWrapper>
+                        <Button onClick={() => setAddCompanyModal(!addCompanyModal)} variant="contained">Add Company</Button>
+                    </ButtonWrapper>
+                    <ModalComponent active={addCompanyModal} setActive={setAddCompanyModal}>
+                        <AddCompanyComponent/>
+                    </ModalComponent>
+                    <ModalComponent active={addShopModal} setActive={setAddShopModal}>
+                        <AddShopComponent companyId={compId}/>
+                    </ModalComponent>
+                </div>
+                : <></>}
             <FilterWrapper>
                 <label htmlFor="filter">Filter: </label>
                 <select
@@ -154,7 +175,6 @@ export const CompaniesCatalogPage = (props: Props) => {
                 <button onClick={() => {
                     setState(!state)
                     setFilter('')
-                    console.log(1)
                 }
                 }>Відмінити</button>
             </FilterWrapper>

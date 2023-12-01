@@ -21,15 +21,19 @@ const Header = (props: Props) => {
               <Link to={'/companies'}>Discounts</Link>
           </p>
         </div>
-        <div>
-            <Button variant="contained" onClick={() => {
-                setRegActive(!isRegActive)}
-            }>Registration</Button>
-            <Button variant="contained" onClick={() => {
-                setLoginActive(!isLoginActive)}
-            }>Sign Up</Button>
-            <Button variant="contained" href={'/admin'}>AdminPanel</Button>
-        </div>
+          {localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'user'
+              ?
+              <div>
+                <p>You Logined</p>
+              </div>
+          : <div>
+                  <Button variant="contained" onClick={() => {
+                      setRegActive(!isRegActive)}
+                  }>Registration</Button>
+                  <Button variant="contained" onClick={() => {
+                      setLoginActive(!isLoginActive)}
+                  }>Sign Up</Button>
+              </div>}
           <ModalComponent active={isLoginActive} setActive={setLoginActive}>
               <LoginForm/>
           </ModalComponent>
